@@ -4,7 +4,7 @@
   Color.ColorSpace.register(Color.HSL);
   Color.ColorSpace.register(Color.OKLCH);
 
-  import "../styles/main.scss";
+  import "../styles/main.sass";
   import "../styles/utility.scss";
 
   import Collapsible from "$lib/Collapsible.svelte";
@@ -51,6 +51,11 @@
   main {
     width: 800px;
   }
+  label {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
 </style>
 
 <Banner style='error' bind:open={errorBanner}
@@ -69,7 +74,7 @@
   <h1>Svelte UI test page by <code>@the-dissidents</code></h1>
 
   <div class="vlayout">
-    <div class="hlayout" style="height: 600px;" bind:this={topPane}>
+    <div class="hlayout" style="height: 500px;" bind:this={topPane}>
       <div bind:this={leftPane} style="width: 300px;">
         <TabView>
           <TabPage id="1">
@@ -77,16 +82,28 @@
               Common (value={value})
             {/snippet}
 
-            Enter a number: <NumberInput bind:value step="0.01"/>
-
-            <br>
+            <label>
+              Enter a number:
+              <NumberInput bind:value step="0.01"/>
+            </label>
 
             <Collapsible header="Styled native controls" active={true}>
-              <div class="hlayout" style="gap: 1em;">
+              <button>button</button>
+              <button disabled>disabled button</button>
+              <select>
+                <option>first</option>
+                <option>second</option>
+                <option>third</option>
+              </select>
+              <div class="hlayout" style="gap: 0 1em;">
                 <div class="vlayout">
                   <label>
                     <input type='checkbox'>
                     Ketchup
+                  </label>
+                  <label>
+                    <input type='checkbox' disabled>
+                    Yoghurt
                   </label>
                   <label>
                     <input type='checkbox'>
@@ -106,11 +123,24 @@
                     <input type='radio' name='1'>
                     Mail
                   </label>
+                  <label>
+                    <input type='radio' name='1' disabled>
+                    Telepathy
+                  </label>
                 </div>
               </div>
 
-              <h5>Textarea</h5>
-              <textarea>content...</textarea>
+              <h5>Text inputs</h5>
+              <label>
+                text:
+                <input type="text" placeholder="placeholder">
+              </label>
+              <label>
+                disabled text:
+                <input type="text" placeholder="placeholder" disabled>
+              </label>
+              <textarea>textarea...</textarea>
+              <textarea disabled>disabled textarea...</textarea>
 
               <h5>Button-style checkboxes</h5>
               <label>
@@ -124,6 +154,9 @@
               </label><label class="middle">
                 <input type='checkbox' class="button">
                 Italic
+              </label><label class="middle">
+                <input type='checkbox' class="button" disabled>
+                Disabled
               </label><label class="right">
                 <input type='checkbox' class="button">
                 Underline
@@ -165,11 +198,45 @@
             <Tooltip position={tooltipPos} text="content of tooltip">
               <button>tooltip</button>
             </Tooltip>
+
+            <h5>Listbox</h5>
+            <ol role="listbox" style="max-height: 250px;">
+              <li>item 1</li>
+              <li>item 2</li>
+              <li>item 3</li>
+              <li>another item</li>
+              <li>item 5</li>
+              <li>item 6</li>
+              <li>item 7</li>
+              <li>another item</li>
+              <li>item 9</li>
+              <li>item 10</li>
+              <li>item 11</li>
+              <li>another item</li>
+              <li>item 1</li>
+              <li>item 2</li>
+              <li>item 3</li>
+              <li>another item</li>
+              <li>item 5</li>
+              <li>item 6</li>
+              <li>item 7</li>
+              <li>another item</li>
+              <li>item 9</li>
+              <li>item 10</li>
+              <li>item 11</li>
+              <li>another item</li>
+            </ol>
           </TabPage>
         </TabView>
       </div>
       <Resizer control={leftPane} vertical={true}/>
       <div class="vlayout flexgrow">
+
+        <label>
+          Slider:
+          <input type='range' min="0" max="100" value="5" />
+        </label>
+
         <p>
           You can reorder this list
         </p>

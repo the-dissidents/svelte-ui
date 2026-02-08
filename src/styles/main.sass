@@ -1,0 +1,547 @@
+@use 'sass:list' as *
+@use 'uchu.css'
+
+// Parameters
+
+$fontFamily:  system-ui !default
+$fontSize:    1rem      !default
+
+$page-background-light:   #fafafa         !default
+$page-background-dark:    var(--uchu-yin-9) !default
+
+$text-light:      var(--uchu-yin)          !default
+$text-dark:       var(--uchu-yang)         !default
+$h5-text-light:   var(--uchu-yin-6)        !default
+$h5-text-dark:    var(--uchu-yin-3)        !default
+
+$disabled-text-light:   var(--uchu-gray-9)       !default
+$disabled-text-dark:    var(--uchu-gray-9)       !default
+$disabled-back-light:   var(--uchu-gray-1)       !default
+$disabled-back-dark:    var(--uchu-yin-7)        !default
+
+$box-border-light:      var(--uchu-gray-4)       !default
+$box-border-dark:       var(--uchu-yin-8)        !default
+$box-back-light:        white                  !default
+$box-back-dark:         var(--uchu-yin-8)        !default
+
+$small-border-light:    var(--uchu-gray-4)       !default
+$small-border-dark:     var(--uchu-yin-7)        !default
+
+$button-back-light:     white                  !default
+$button-back-dark:      var(--uchu-yin-7)        !default
+$button-disabled-light: var(--uchu-gray-1)       !default
+$button-disabled-dark:  var(--uchu-yin-7)        !default
+
+$accent1-back-light:    var(--uchu-red-1)        !default
+$accent1-back-dark:     Teal                   !default
+$accent1-border-light:  var(--uchu-red-2)        !default
+$accent1-border-dark:   LightSeaGreen          !default
+
+$accent2-back-light:    var(--uchu-pink-7)       !default
+$accent2-back-dark:     var(--uchu-blue-4)       !default
+$accent2-border-light:  var(--uchu-pink-8)       !default
+$accent2-border-dark:   var(--uchu-blue-8)       !default
+
+$slider-track-light:    var(--uchu-yin-1)        !default
+$slider-track-dark:     var(--uchu-yin-8)        !default
+
+$separator-light:       var(--uchu-yin-2)        !default
+$separator-dark:        var(--uchu-yin-6)        !default
+$separator-minor-light: var(--uchu-gray-2)       !default
+$separator-minor-dark:  var(--uchu-yin-7)        !default
+
+$shadow-light: rgba(128, 128, 128, 0.3) !default
+$shadow-dark:  rgba(128, 128, 128, 0.3) !default
+
+$border-radius-large: 3px         !default
+$border-radius-small: 2px         !default
+
+// #region GERNERIC
+
+@mixin light
+  @media (prefers-color-scheme: light)
+    @content
+
+@mixin dark
+  @media (prefers-color-scheme: dark)
+    @content
+
+@function c($expr, $var)
+  @if $var == none
+    @return none
+  @else
+    @return append($expr, $var)
+
+%reset
+  margin: 0
+  padding: 0
+  overflow: hidden
+  user-select: none
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+
+%disabled-colors
+  box-shadow: none
+
+  @include light()
+    color: $disabled-text-light
+    background-color: $disabled-back-light
+  @include dark()
+    color: $disabled-text-dark
+    background-color: $disabled-back-dark
+
+:root
+  font-family: $fontFamily
+  font-size: $fontSize
+  line-height: 1.5em
+  font-weight: 400
+
+  font-synthesis: none
+  text-rendering: optimizeLegibility
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  -webkit-text-size-adjust: 100%
+
+  scrollbar-color: gray transparent
+
+  @include light()
+    color: $text-light
+    background-color: $page-background-light
+
+  @include dark()
+    color: $text-dark
+    background-color: $page-background-dark
+
+%separator
+  @include light()
+    border-bottom: c(1px solid, $separator-light)
+  @include dark()
+    border-bottom: c(1px solid, $separator-dark)
+
+%item-separator
+  &:not(:last-child)
+    @include light()
+      border-bottom: c(1px solid, $separator-minor-light)
+    @include dark()
+      border-bottom: c(1px solid, $separator-minor-dark)
+
+%box
+  @extend %reset
+
+  appearance: none
+
+  border-radius: $border-radius-small
+  padding: 3px 5px
+  margin: 1px
+
+  line-height: 1.3em
+  text-align: start
+  text-decoration: none
+  font-family: $fontFamily
+  font-size: 0.85rem
+
+  &:disabled
+    @extend %disabled-colors
+
+  @include light()
+    border: c(1px solid, $box-border-light)
+    background-color: $box-back-light
+    color: $text-light
+    &:focus,
+    &:has(:focus)
+      border: c(1px solid, $accent1-border-light)
+      outline: c(2px solid, $accent1-back-light)
+
+  @include dark()
+    border: c(1px solid, $box-border-dark)
+    background-color: $box-back-dark
+    color: $text-dark
+    &:focus,
+    &:has(:focus)
+      border: c(1px solid, $accent1-border-dark)
+      outline: c(2px solid, $accent1-back-dark)
+
+.lucide
+  display: block
+  width: 1lh
+  height: 1lh
+  margin: auto
+  stroke: currentColor
+  stroke-width: 1
+  stroke-linecap: round
+  stroke-linejoin: round
+  fill: none
+
+// Miscellaneous
+
+h5
+  @extend %reset, %separator
+
+  margin: 0 1px 3px 1px
+  padding-top: 6px
+  font-size: 0.8rem
+  font-weight: bold
+  text-transform: uppercase
+  text-align: start
+
+  @include light()
+    color: $h5-text-light
+  @include dark()
+    color: $h5-text-dark
+
+hr
+  @extend %reset, %separator
+
+  border-top: none
+  border-left: none
+  border-right: none
+
+input
+  @extend %reset
+  font-size: 0.85rem
+
+label
+  @extend %reset
+  font-size: 90%
+  line-height: normal
+
+fieldset
+  @extend %reset
+  border: none
+  padding: 0
+
+// #endregion
+
+// #region Buttons
+
+%hover-indicator
+  &:hover
+    @include light()
+      filter: brightness(97%)
+    @include dark()
+      filter: brightness(110%)
+
+%button-colors
+  border: none
+
+  @include light()
+    background-color: $button-back-light
+    color: $text-light
+    box-shadow: c(0 1px 3px, $shadow-light)
+
+  @include dark()
+    background-color: $button-back-dark
+    color: $text-dark
+    box-shadow: c(0 1px 3px, $shadow-dark)
+
+%button
+  @extend %box, %hover-indicator, %button-colors
+
+  appearance: none
+  display: inline-block
+
+  text-align: center
+  line-height: normal
+
+  &.noborder
+    box-shadow: none
+    &:not(:disabled):not(:hover)
+      background-color: transparent
+
+  &.left
+    border-radius: $border-radius-large 0 0 $border-radius-large
+    margin-right: 0
+    text-align: right
+  &.middle
+    border-left: none
+    border-radius: 0
+    margin-inline: 0
+  &.right
+    border-left: none
+    border-radius: 0 $border-radius-large $border-radius-large 0
+    margin-left: 0
+    text-align: left
+
+%button-disabled
+  box-shadow: none
+
+  @include light()
+    color: $disabled-text-light
+    background-color: $button-disabled-light
+    filter: none
+  @include dark()
+    color: $disabled-text-dark
+    background-color: $button-disabled-dark
+    filter: none
+
+button:where(:not([data-select-trigger]))
+  @extend %button
+
+  &:disabled
+    @extend %button-disabled
+
+// #endregion
+
+// #region Text input
+
+input[type=number],
+input[type=text]
+  @extend %box
+  padding: 2px 3px
+
+// Textarea
+
+textarea,
+div.ProseMirror
+  @extend %box
+
+// #endregion
+
+// #region Select
+
+%select
+  @extend %box
+
+%select-trigger
+  background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'><text x='0' y='10' fill='gray'>▾</text></svg>")
+  background-repeat: no-repeat
+  background-position: right 0 center
+  background-size: 12px
+
+%select-content
+  overflow-y: scroll
+
+  @include light()
+    border: c(1px solid, $box-border-light)
+    background-color: $box-back-light
+    color: $text-light
+  @include dark()
+    border: c(1px solid, $box-border-dark)
+    background-color: $box-back-dark
+    color: $text-dark
+
+%select-item
+  border-radius: 0
+  border-top: none
+  padding: 3px 5px
+  margin: 0
+
+  min-width: 5em
+  font-size: 0.85rem
+
+  text-align: start
+  box-shadow: none
+  font-family: $fontFamily
+
+  &[data-highlighted]
+    filter: brightness(97%)
+
+  @extend %item-separator
+
+select:not([multiple])
+  @extend %select-trigger
+  @extend %select
+  padding: 2px 17px 2px 5px
+
+[data-select-trigger]
+  @extend %select-trigger
+  padding: 2px 17px 2px 5px
+
+  border: none
+  box-shadow: none
+
+  &::before
+    content: "\200b"
+    display: inline-block
+    width: 0
+
+[data-select-content]
+  @extend %select-content
+
+  max-height: min(30vh, var(--bits-select-content-available-height))
+  width: max(30em, var(--bits-select-anchor-width))
+  translate: calc(50% - var(--bits-select-anchor-width) / 2) 0
+
+[data-select-item]
+  @extend %select-item
+
+// #endregion
+
+// #region Combobox
+
+%combobox
+  @extend %select
+  padding: 0
+  display: flex
+  flex-direction: row
+
+div.combobox
+  @extend %combobox
+
+  & [data-combobox-input]
+    @extend %box
+
+    padding: 2px 5px 2px 5px
+    flex-grow: 1
+    border-radius: 2px 0 0 2px
+    border: none
+    outline: none
+
+  & [data-combobox-trigger]
+    @extend %select-trigger
+    border: none
+    box-shadow: none
+
+    border-radius: 0 2px 2px 0
+    padding: 0
+    width: 15px
+
+[data-combobox-content]
+  @extend %select-content
+
+  max-height: min(30vh, var(--bits-combobox-content-available-height))
+  width: max(30em, var(--bits-combobox-anchor-width))
+  translate: calc(50% - var(--bits-combobox-anchor-width) / 2) 0
+
+[data-combobox-item]
+  @extend %select-item
+
+// #endregion
+
+// #region Radio box & Checkbox
+
+%smallbox
+  display: inline-block
+  vertical-align: sub
+
+  appearance: none
+  height: 0.85rem
+  aspect-ratio: 1 / 1
+  margin: 3px 2px
+
+  @extend %hover-indicator
+
+  &:disabled
+    @extend %disabled-colors
+
+  @include light()
+    border: c(1px solid, $small-border-light)
+    background-color: $box-back-light
+    &:not(:disabled):checked
+      border: c(1px solid, $accent2-border-light)
+      background-color: $accent2-back-light
+  @include dark()
+    border: c(1px solid, $small-border-dark)
+    background-color: $box-back-dark
+    &:not(:disabled):checked
+      border: c(1px solid, $accent2-border-dark)
+      background-color: $accent2-back-dark
+
+input[type=radio]
+  @extend %smallbox
+  border-radius: 99em
+
+  &:checked
+    background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='10px' fill='white'><circle cx='5' cy='5' r='5'/></svg>")
+    background-repeat: no-repeat
+    background-position: center
+    background-size: 0.3rem
+  &:disabled:checked
+    background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='10px' fill='gray'><circle cx='5' cy='5' r='5'/></svg>")
+
+// Checkbox
+
+input[type=checkbox]
+  @extend %smallbox
+  border-radius: 2px
+
+  &:checked
+    background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='10px' stroke='white' fill='none' stroke-width='1.5px'><path d='M2 6 L5 8 L8 2'/></svg>")
+    background-repeat: no-repeat
+    background-position: center
+    background-size: 0.7rem
+  &:disabled:checked
+    background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='10px' stroke='gray' fill='none' stroke-width='1.5px'><path d='M2 6 L5 8 L8 2'/></svg>")
+
+input[type=checkbox].button
+  display: none
+  width: 0
+  height: 0
+
+label:has(input[type='checkbox'].button)
+  @extend %button
+
+label:has(input[type='checkbox'].button:disabled)
+  @extend %button, %button-disabled
+
+label:has(input[type='checkbox'].button:checked)
+  @include light()
+    background-color: $accent1-back-light
+  @include dark()
+    background-color: $accent1-back-dark
+
+// #endregion
+
+// #region Slider
+
+input[type=range]
+  appearance: none
+  -webkit-appearance: none
+  width: 100%
+  background: transparent
+
+  &::-webkit-slider-thumb
+    @extend %hover-indicator, %button-colors
+
+    -webkit-appearance: none
+    height: 14px
+    margin-top: -1px
+    width: 16px
+    border-radius: 2px
+    // cursor: pointer;
+
+  &::-webkit-slider-runnable-track
+    width: 100%
+    height: 12px
+    // cursor: pointer;
+    border-radius: 2px
+
+    @include light()
+      background: $slider-track-light
+    @include dark()
+      background: $slider-track-dark
+
+  // &:focus {
+  //   outline: none;
+  // }
+// #endregion
+
+// #region List box
+
+ol[role='listbox']
+  @extend %box
+
+  display: flex
+  flex-direction: column
+  white-space: normal
+  overflow-y: auto
+
+  padding: 3px 0
+  margin: 1px
+  border-radius: 3px
+  list-style: none
+
+ol[role='listbox'] > li
+  width: auto
+  display: block
+  font-family: $fontFamily
+  font-size: 0.85rem
+  line-height: 1.3
+  padding: 3px 6px
+  user-select: auto
+  -webkit-user-select: auto
+
+  @extend %item-separator
+
+// #endregion
