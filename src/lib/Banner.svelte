@@ -100,7 +100,9 @@ $effect(() => {
 </form>
 </dialog>
 
-<style>
+<style lang='scss'>
+@use '../styles/uchu.scss';
+
 @media (prefers-color-scheme: light) {
   dialog {
     box-shadow: 2px 4px 10px gray;
@@ -110,8 +112,8 @@ $effect(() => {
 @media (prefers-color-scheme: dark) {
   dialog {
     box-shadow: 2px 4px 10px black;
-    background-color: var(--uchu-yin-6);
-    color: var(--uchu-yang);
+    background-color: uchu.$yin-6;
+    color: uchu.$yang;
   }
 }
 
@@ -150,13 +152,13 @@ button {
 }
 
 .error {
-  background-color: var(--uchu-red-4);
-  color: var(--uchu-yang);
+  background-color: uchu.$red-4;
+  color: uchu.$yang;
   & button {
-    color: var(--uchu-yang);
+    color: uchu.$yang;
   }
   & button:hover {
-    background-color: var(--uchu-red-3) !important;
+    background-color: uchu.$red-3 !important;
   }
 }
 

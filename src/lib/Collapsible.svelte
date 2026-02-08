@@ -45,27 +45,29 @@ let {
   {@render children?.()}
 </div>
 
-<style lang="scss">
+<style lang='scss'>
+@use '../styles/uchu';
+
 @media (prefers-color-scheme: light) {
   button.collapsible {
-    background-color: var(--uchu-gray-1);
+    background-color: uchu.$gray-1;
   }
   button.checked {
-    background-color: var(--uchu-red-1) !important;
+    background-color: uchu.$red-1 !important;
   }
   .content {
-    /* background-color: var(--uchu-gray-1); */
-    border-left: 1px solid var(--uchu-gray-3);
+    /* background-color: uchu.$gray-1; */
+    border-left: 1px solid uchu.$gray-3;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   button.collapsible {
-    outline: 1px solid var(--uchu-yin-8);
-    background-color: var(--uchu-yin-9);
+    outline: 1px solid uchu.$yin-8;
+    background-color: uchu.$yin-9;
   }
   button.checked {
-    background-color: var(--uchu-green-9) !important;
+    background-color: uchu.$green-9 !important;
   }
 }
 

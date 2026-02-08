@@ -87,7 +87,9 @@ const autofocus: Action<HTMLButtonElement, string> = (node, text) => {
   </div>
 </dialog>
 
-<style>
+<style lang='scss'>
+  @use '../styles/uchu.scss';
+
   @media (prefers-color-scheme: light) {
     dialog {
       box-shadow: 0 0 10px gray;
@@ -97,8 +99,8 @@ const autofocus: Action<HTMLButtonElement, string> = (node, text) => {
   @media (prefers-color-scheme: dark) {
     dialog {
       box-shadow: 0 0 10px black;
-      background-color: var(--uchu-yin-9);
-      color: var(--uchu-yang);
+      background-color: uchu.$yin-9;
+      color: uchu.$yang;
     }
   }
   dialog::backdrop {
@@ -151,6 +153,6 @@ const autofocus: Action<HTMLButtonElement, string> = (node, text) => {
     border-bottom: 1px solid gray;
   }
   button:focus {
-    outline: 2px solid color-mix(in oklab, var(--uchu-blue-3), transparent);
+    outline: 2px solid color-mix(in oklab, uchu.$blue-3, transparent);
   }
 </style>

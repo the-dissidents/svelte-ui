@@ -18,7 +18,7 @@ interface Props extends HTMLAttributes<HTMLSpanElement> {
   children?: Snippet;
 }
 
-let { 
+let {
   position = 'top', kind = 'panel', maxWidth = '200px',
   onclose, children, ...rest
 }: Props = $props();
@@ -77,28 +77,30 @@ export function openState() {
 
 </script>
 
-<style>
+<style lang='scss'>
+  @use '../styles/uchu.scss';
+
   @media (prefers-color-scheme: light) {
     .tooltip {
-      background-color: var(--uchu-yin);
-      color: var(--uchu-yang);
+      background-color: uchu.$yin;
+      color: uchu.$yang;
       box-shadow: 1px 3px 10px -3px rgba(0,0,0,0.4);
     }
     .panel {
-      background-color: var(--uchu-yang);
-      color: var(--uchu-yin);
+      background-color: uchu.$yang;
+      color: uchu.$yin;
       box-shadow: 1px 3px 10px -3px rgba(0,0,0,0.4);
     }
   }
   @media (prefers-color-scheme: dark) {
     .tooltip {
-      background-color: var(--uchu-yin-2);
-      color: var(--uchu-yin);
+      background-color: uchu.$yin-2;
+      color: uchu.$yin;
       box-shadow: 1px 3px 10px -3px rgba(255, 255, 255, 0.4);
     }
     .panel {
-      background-color: var(--uchu-yin-9);
-      color: var(--uchu-yang);
+      background-color: uchu.$yin-9;
+      color: uchu.$yang;
       box-shadow: 1px 3px 10px -1px rgba(0,0,0,0.4);
     }
   }

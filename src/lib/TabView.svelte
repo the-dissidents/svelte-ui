@@ -76,13 +76,15 @@ setContext<TabAPI>(TabAPIContext, {
   {@render children()}
 </div>
 
-<style>
+<style lang='scss'>
+  @use '../styles/uchu.scss';
+
   @media (prefers-color-scheme: light) {
     .header {
-      border-bottom: 1px solid var(--uchu-blue-4);
+      border-bottom: 1px solid uchu.$blue-4;
     }
     button {
-      color: var(--uchu-yin);
+      color: uchu.$yin;
       &:not(.selected) {
         filter: contrast(10%) !important;
       }
@@ -91,7 +93,7 @@ setContext<TabAPI>(TabAPIContext, {
       }
     }
     .selected {
-      border-bottom: 2px solid var(--uchu-blue-4);
+      border-bottom: 2px solid uchu.$blue-4;
     }
   }
 
@@ -100,7 +102,7 @@ setContext<TabAPI>(TabAPIContext, {
       border-bottom: 1px solid darkslategray;
     }
     button {
-      color: var(--uchu-yang);
+      color: uchu.$yang;
       &:not(.selected) {
         filter: contrast(10%) !important;
       }

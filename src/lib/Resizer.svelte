@@ -31,7 +31,7 @@ function ondrag(ev: MouseEvent) {
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class={vertical ? 'resizerV' : 'resizerH'} 
+<div class={vertical ? 'resizerV' : 'resizerH'}
   style='cursor: {vertical ? 'ew-resize' : 'ns-resize'}'
   onmousedown={(ev) => {
 	  cx = ev.clientX;
@@ -48,22 +48,25 @@ function ondrag(ev: MouseEvent) {
 <div class='inside'></div>
 </div>
 
-<style>
+<style lang="scss">
+@use '../styles/parameters.sass' as *;
+@use '../styles/uchu.scss';
+
 @media (prefers-color-scheme: light) {
   .inside {
-    background-color: var(--uchu-yin-1);
+    background-color: $separator-light;
   }
   :hover .inside {
-    background-color: var(--uchu-blue-3);
+    background-color: uchu.$blue-3;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .inside {
-    background-color: var(--uchu-yin-8);
+    background-color: $separator-dark;
   }
   :hover .inside {
-    background-color: var(--uchu-red-3);
+    background-color: uchu.$red-3;
   }
 }
 
