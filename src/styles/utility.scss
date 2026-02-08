@@ -1,0 +1,24 @@
+.vlayout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.vlayout > div {
+  width: 100%;
+}
+
+.hlayout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+.hlayout > div {
+  height: 100%;
+}
+
+.flexgrow {
+  flex: 1 0;
+}
+.flexshrink {
+  flex: 0 1;
+}

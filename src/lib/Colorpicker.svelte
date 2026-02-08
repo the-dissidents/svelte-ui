@@ -1,0 +1,448 @@
+<script lang="ts">
+  import * as Color from "colorjs.io/fn";
+  import { untrack } from "svelte";
+
+  import Popup from "./Popup.svelte";
+  import NumberInput from "./NumberInput.svelte";
+  import Tooltip from "./Tooltip.svelte";
+  import { I18n } from "./I18n.svelte";
+
+  import "../styles/main.scss";
+  import "../styles/utility.scss";
+
+  type Boundary = readonly [number, number, boolean];
+  type ModeInfo = {
+    bounds: readonly [number, number, number],
+    expr: (v0: number, v1: number, v2: number, alpha?: number) => string,
+    fromColorIo: (v0: number | null, v1: number | null, v2: number | null) => readonly [number, number, number],
+    interpolationMode: readonly [string, string, string],
+  };
+
+  const modes: Record<string, ModeInfo> = {
+    srgb: {
+      bounds: [255, 255, 255],
+      expr: (v0, v1, v2, alpha = 1) =>
+        `rgb(${v0.toFixed(2)} ${v1.toFixed(2)} ${v2.toFixed(2)} / ${alpha})`,
+      fromColorIo: (v0, v1, v2) => [(v0 ?? 0) * 255, (v1 ?? 0) * 255, (v2 ?? 0) * 255],
+      interpolationMode: ['in srgb', 'in srgb', 'in srgb'],
+    },
+    hsl: {
+      bounds: [360, 100, 100],
+      expr: (v0, v1, v2, alpha = 1) =>
+        `hsl(${v0.toFixed(2)}deg ${v1.toFixed(3)}% ${v2.toFixed(3)}% / ${alpha})`,
+      fromColorIo: (v0, v1, v2) => [v0 ?? 0, v1 ?? 0, v2 ?? 0],
+      interpolationMode: ['in hsl longer hue', 'in hsl', 'in hsl'],
+    },
+    oklch: {
+      bounds: [1, 0.4, 360],
+      expr: (v0, v1, v2, alpha = 1) =>
+        `oklch(${v0.toFixed(3)} ${v1.toFixed(3)} ${v2.toFixed(2)} / ${alpha})`,
+      fromColorIo: (v0, v1, v2) => [v0 ?? 0, v1 ?? 0, v2 ?? 0],
+      interpolationMode: ['in oklch', 'in oklch', 'in oklch longer hue'],
+    },
+  };
+
+  type ColorMode = keyof typeof modes;
+
+  function convertMode(to: ColorMode) {
+    console.log('converting to', to, mode);
+    const newColor = Color.to(
+      Color.parse(modes[mode].expr(value0, value1, value2)), to, { inGamut: true });
+    newColor.alpha = alpha;
+    updateFromColor(newColor);
+    computeBoundaries();
+  }
+
+  function parseHex() {
+    let match = /#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/.exec(hex.toLowerCase());
+    if (match) {
+      const newColor = Color.getColor(hex);
+      newColor.alpha = alpha;
+      changed = true;
+      updateFromColor(newColor);
+      computeBoundaries();
+      oninput?.(color);
+    } else {
+      updateFromValues();
+    }
+  }
+
+  function computeBoundaries() {
+    range0 = getGamutBoundary(modes[mode].bounds[0], (x) => [x,value1,value2]);
+    range1 = getGamutBoundary(modes[mode].bounds[1], (x) => [value0,x,value2]);
+    range2 = getGamutBoundary(modes[mode].bounds[2], (x) => [value0,value1,x], mode == 'oklch');
+  }
+
+  function updateFromValues() {
+    color = Color.getColor(modes[mode].expr(value0, value1, value2, alpha));
+    changed = true;
+    updateTexts();
+    oninput?.(color);
+  }
+
+  function updateFromColor(c: Color.PlainColorObject) {
+    if (color !== c) color = c;
+
+    let modeChanged = false;
+    let normalized: Color.PlainColorObject;
+    if (c.space.id !== mode && c.space.id in modes) {
+      mode = c.space.id as ColorMode;
+      modeChanged = true;
+      normalized = Color.to(c, mode, { inGamut: true });
+    } else
+      normalized = Color.toGamut(c);
+
+    [value0, value1, value2] = modes[mode].fromColorIo(...normalized.coords);
+    alpha = c.alpha ?? 1;
+    if (Number.isNaN(value0)) value0 = 0;
+    if (Number.isNaN(value1)) value1 = 0;
+    if (Number.isNaN(value2)) value2 = 0;
+    updateTexts();
+
+    if (modeChanged)
+      computeBoundaries();
+  }
+
+  function updateTexts() {
+    let srgb = Color.to(color, Color.sRGB);
+    outOfGamut = !Color.inGamut(srgb);
+    srgb = Color.toGamut(srgb);
+    const [r, g, b] = srgb.coords;
+    hex = `#${
+      Math.round((r ?? 0) * 255).toString(16).padStart(2, '0')}${
+      Math.round((g ?? 0) * 255).toString(16).padStart(2, '0')}${
+      Math.round((b ?? 0) * 255).toString(16).padStart(2, '0')}`;
+  }
+
+  function getGamutBoundary01(
+    fun: (x: number) => [v1: number, v2: number, v3: number], precise = false
+  ): null | Boundary {
+    const EPISION = 1 / 256;
+    const isInside = (x: number) =>
+      Color.inGamut(Color.parse(modes[mode].expr(...fun(x))), Color.sRGB);
+
+    function findSample(insideness: boolean) {
+      let division = 1;
+      while (true) {
+        const len = 1 / division;
+        if (len <= EPISION) return null;
+        for (let i = 0; i < division; i++) {
+          const m = len * (i + 0.5);
+          if (isInside(m) === insideness) return m;
+        }
+        division *= 2;
+      }
+    }
+
+    function findTransition(xOut: number, xIn: number): number {
+      while (Math.abs(xOut - xIn) > EPISION) {
+        const m = (xOut + xIn) / 2;
+        if (isInside(m)) xIn = m;
+        else xOut = m;
+      }
+      return xIn;
+    }
+
+    const leftIn = isInside(0), rightIn = isInside(1);
+    if (leftIn && rightIn) {
+      if (precise) {
+        const m = findSample(false);
+        if (m === null) return [0, 1, false];
+        return [findTransition(m, 0), findTransition(m, 1), true];
+      } else return [0, 1, false];
+    }
+    if (leftIn)  return [0, findTransition(1, 0), false];
+    if (rightIn) return [findTransition(0, 1), 1, false];
+    let m = findSample(true);
+    if (m === null) return null;
+    return [findTransition(0, m), findTransition(1, m), false];
+  }
+
+  function getGamutBoundary(
+    bound: number,
+    fun: (x: number) => [v1: number, v2: number, v3: number],
+    precise = false
+  ): Boundary | null {
+    const x = getGamutBoundary01((x) => fun(x * bound), precise);
+    if (x === null) return null;
+    return [x[0] * bound, x[1] * bound, x[2]];
+  }
+
+  function getRangeGradient(range: Boundary | null, bound: number) {
+    const OUT = 'gray';
+    const IN = 'transparent'
+    if (!range) return OUT;
+    let [a, b, c] = range;
+    a *= 100 / bound;
+    b *= 100 / bound;
+    return c
+      ? `linear-gradient(to right, ${IN} ${a}%, ${OUT} ${a}%, ${OUT} ${b}%, ${IN} ${b}%)`
+      : `linear-gradient(to right, ${OUT} ${a}%, ${IN} ${a}%, ${IN} ${b}%, ${OUT} ${b}%)`;
+  }
+
+  interface Props {
+    mode?: ColorMode,
+    oninput?: (color: Color.PlainColorObject) => void,
+    onchange?: (color: Color.PlainColorObject) => void,
+    color: Color.PlainColorObject
+  };
+
+  let { mode = $bindable('srgb'), oninput, onchange, color = $bindable() }: Props = $props();
+
+  $effect(() => {
+    let _color = color;
+    untrack(() => {
+      updateFromColor(_color);
+      computeBoundaries();
+    });
+  });
+
+  let value0 = $state(0),
+      value1 = $state(0),
+      value2 = $state(0),
+      alpha = $state(1),
+      range0: Boundary | null = $state([0, 1, false]),
+      range1: Boundary | null = $state([0, 1, false]),
+      range2: Boundary | null = $state([0, 1, false]),
+      hex = $state(''),
+      outOfGamut = $state(false);
+
+  let changed = false;
+
+  let popupHandler: Popup;
+</script>
+
+<button class="preview-btn" aria-label="color"
+  style="--color: {modes[mode].expr(value0, value1, value2, 1)};
+         --trspColor: {modes[mode].expr(value0, value1, value2, alpha)};"
+  onclick={(e) => {
+    const self = e.currentTarget;
+    const rect = self.getBoundingClientRect();
+    changed = false;
+    popupHandler.openAt?.(rect.left, rect.bottom, Math.max(300, rect.width));
+  }}
+></button>
+
+<Popup bind:this={popupHandler} maxWidth="none"
+  onclose={() => {
+    if (changed) {
+      changed = false;
+      onchange?.(color);
+    }
+  }}>
+  <div class="hlayout">
+    <select value={mode} onchange={(ev) => convertMode(ev.currentTarget.value as ColorMode)}>
+      {#each Object.keys(modes) as m (m)}
+        <option value={m}>{m}</option>
+      {/each}
+    </select>
+    <hr class="flexgrow"/>
+  </div>
+  <div class='outer hlayout'>
+    <div class='vlayout flexgrow'>
+      <div class="value-group">
+        <div class='slider-container'>
+          <span class='back' style="background: {getRangeGradient(range0, modes[mode].bounds[0])}">
+            <span class='coloring'
+            style="background: linear-gradient(90deg {modes[mode].interpolationMode[0]}, {
+              modes[mode].expr(0, value1, value2)}, {
+              modes[mode].expr(modes[mode].bounds[0], value1, value2)});">
+            </span>
+          </span>
+          <input type="range" bind:value={value0}
+            min="0" max={modes[mode].bounds[0]} step="0.001"
+            oninput={() => {
+              updateFromValues();
+              range1 = getGamutBoundary(modes[mode].bounds[1], (x) => [value0, x, value2]);
+              range2 = getGamutBoundary(modes[mode].bounds[2], (x) => [value0, value1, x], mode == 'oklch');
+            }} />
+        </div>
+        <NumberInput bind:value={value0} width="10ch"
+          min="0" max={modes[mode].bounds[0]} step="0.001" />
+      </div>
+
+      <div class="value-group">
+        <div class='slider-container'>
+          <span class='back' style="background: {getRangeGradient(range1, modes[mode].bounds[1])}">
+            <span class='coloring'
+              style="background: linear-gradient(90deg {modes[mode].interpolationMode[1]}, {
+              modes[mode].expr(value0, 0, value2)}, {
+              modes[mode].expr(value0, modes[mode].bounds[1], value2)});">
+            </span>
+          </span>
+          <input type="range" bind:value={value1}
+            min="0" max={modes[mode].bounds[1]} step="0.001"
+            oninput={() => {
+              updateFromValues();
+              range0 = getGamutBoundary(modes[mode].bounds[0], (x) => [x, value1, value2]);
+              range2 = getGamutBoundary(modes[mode].bounds[2], (x) => [value0, value1, x], mode == 'oklch');
+            }} />
+        </div>
+        <NumberInput bind:value={value1} width="10ch"
+          min="0" max={modes[mode].bounds[1]} step="0.001" />
+      </div>
+
+      <div class="value-group">
+        <div class='slider-container'>
+          <span class='back' style="background: {getRangeGradient(range2, modes[mode].bounds[2])}">
+            <span class='coloring'
+              style="background: linear-gradient(90deg {modes[mode].interpolationMode[2]}, {
+              modes[mode].expr(value0, value1, 0)}, {
+              modes[mode].expr(value0, value1, modes[mode].bounds[2])});">
+            </span>
+          </span>
+          <input type="range" bind:value={value2}
+            min="0" max={modes[mode].bounds[2]} step="0.001"
+            oninput={() => {
+              updateFromValues();
+              range0 = getGamutBoundary(modes[mode].bounds[0], (x) => [x, value1, value2]);
+              range1 = getGamutBoundary(modes[mode].bounds[1], (x) => [value0, x, value2]);
+            }} />
+        </div>
+        <NumberInput bind:value={value2} width="10ch"
+          min="0" max={modes[mode].bounds[2]} step="0.001" />
+      </div>
+
+      <div class="value-group">
+        <div class='slider-container'>
+          <span class='back' style="background: transparent;">
+            <span class='coloring alpha'
+              style="--grad: linear-gradient(90deg, {
+              modes[mode].expr(value0, value1, value2, 0)}, {
+              modes[mode].expr(value0, value1, value2, 1)});">
+            </span>
+          </span>
+          <input type="range" bind:value={alpha}
+            min="0" max="1" step="0.001"
+            oninput={() => {
+              updateFromValues();
+            }}
+            />
+        </div>
+        <NumberInput bind:value={alpha} width="10ch"
+          min="0" max="1" step="0.001" />
+      </div>
+    </div>
+  </div>
+  <div class='value-group codes'>
+    <input class="flexgrow" type="text" disabled
+      value={modes[mode].expr(value0, value1, value2, alpha)} />
+    {#if outOfGamut}
+    <Tooltip position="bottom" text={I18n["color-out-of-srgb-gamut"]}>
+      <span class="warning">⚠️</span>
+    </Tooltip>
+    {/if}
+    <input type="text" bind:value={hex} onchange={() => parseHex()} />
+  </div>
+</Popup>
+
+<style lang='scss'>
+  hr {
+    margin-left: 5px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px dashed gray;
+  }
+
+  span.warning {
+    cursor: help;
+    user-select: none; -webkit-user-select: none;
+    -moz-user-select: none; -ms-user-select: none;
+  }
+
+  span.back {
+    display: inline-block;
+    position: absolute;
+    top: 5px; left: 0; right: 0; bottom: 5px;
+    z-index: -1;
+    background-color: whitesmoke;
+    border-radius: 3px;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 1px 3px rgba(128, 128, 128, 0.378);
+  }
+
+  .alpha {
+    background-image:
+      linear-gradient(45deg, #ccc 25%, transparent 25%),
+      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #ccc 75%),
+      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--grad);
+    }
+  }
+
+  span.coloring {
+    display: inline-block;
+    position: absolute;
+    top: 3px; left: 0; right: 0; bottom: 3px;
+    z-index: -1;
+    padding: 0;
+    margin: 0;
+  }
+
+  .slider-container {
+    position: relative;
+    flex-grow: 1;
+  }
+
+  .value-group {
+    display: flex;
+    gap: 5px;
+    & span {
+      font-size: 85%;
+    }
+    & input {
+      width: 10ch;
+      box-sizing: border-box;
+      font-family: var(--monospaceFontFamily);
+    }
+  }
+
+  .preview-btn {
+    width: 100%;
+    height: 1.5em;
+    position: relative;
+    overflow: hidden;
+
+    background-image:
+      linear-gradient(45deg, #ccc 25%, transparent 25%),
+      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #ccc 75%),
+      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(
+        to right,
+        var(--color) 50%,
+        var(--trspColor) 50%
+      );
+    }
+  }
+
+  input[type=range] {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+
+    &::-webkit-slider-runnable-track {
+      background: transparent;
+    }
+  }
+</style>
