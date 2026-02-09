@@ -36,10 +36,12 @@ Components:
 2. Configure the main stylesheet. You must enable preprocessing of SASS/SCSS files, and you need to `@use` the main stylesheet in somewhere that has global scope (e.g. in a `<style lang='scss' global>` block or in a stylesheet `import`ed in your entrance point's JS/TS script):
 
     ```scss
-    // The author cannot find a reliable method to resolve package paths in SASS/SCSS except specifying the whole relative path to it in node_modules
+    // The author cannot find a reliable method to resolve package paths in
+    // SASS/SCSS except specifying the whole relative path to it in node_modules
     @use "../node_modules/@the_dissidents/svelte-ui/dist/main";
 
-    // Uncomment this line to access the uchu palette which is used in the default values
+    // Uncomment this line to access the uchu palette which is used in the
+    // default values:
     // @use "../node_modules/@the_dissidents/svelte-ui/dist/uchu";
 
     @include main.configure(
