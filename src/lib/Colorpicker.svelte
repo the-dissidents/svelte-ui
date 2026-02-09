@@ -1,5 +1,17 @@
-<script lang="ts">
+<script lang="ts" module>
   import * as Color from "colorjs.io/fn";
+
+  function tryRegister(s: Color.ColorSpace) {
+    if (!Color.ColorSpace.registry[s.id])
+      Color.ColorSpace.register(s);
+  }
+
+  tryRegister(Color.sRGB);
+  tryRegister(Color.HSL);
+  tryRegister(Color.OKLCH);
+</script>
+
+<script lang="ts">
   import { untrack } from "svelte";
 
   import Popup from "./Popup.svelte";
@@ -334,6 +346,8 @@
 </Popup>
 
 <style lang='scss'>
+  @use "./parameters.sass" as *;
+
   hr {
     margin-left: 5px;
     border-top: none;
@@ -401,7 +415,7 @@
     & input {
       width: 10ch;
       box-sizing: border-box;
-      font-family: var(--monospaceFontFamily);
+      font-family: v(mono-font-family);
     }
   }
 

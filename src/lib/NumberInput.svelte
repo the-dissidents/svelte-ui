@@ -21,8 +21,10 @@
     }
   }} {...rest}/>
 
-<style>
-  input {
-    font-family: var(--monospaceFontFamily);
+<style lang='scss'>
+  @use "./parameters.sass" as *;
+
+  input[type=number] {
+    font-family: v(mono-font-family);
   }
 </style>

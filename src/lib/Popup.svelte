@@ -79,30 +79,29 @@ export function openState() {
 
 <style lang='scss'>
   @use 'parameters.sass' as *;
-  @use 'uchu.scss';
 
   @media (prefers-color-scheme: light) {
     .tooltip {
-      background-color: $page-background-dark;
-      color: $text-dark;
-      box-shadow: 1px 3px 10px -3px $shadow-dark;
+      background-color: v(page-background-dark);
+      color: v(text-dark);
+      box-shadow: 1px 3px 10px -3px v(shadow-dark);
     }
     .panel {
-      background-color: $page-background-light;
-      color: $text-light;
-      box-shadow: 1px 3px 10px -3px $shadow-light;
+      background-color: v(page-background-light);
+      color: v(text-light);
+      box-shadow: 1px 3px 10px -3px v(shadow-light);
     }
   }
   @media (prefers-color-scheme: dark) {
     .tooltip {
-      background-color: $page-background-medium;
-      color: $text-light;
-      box-shadow: 1px 3px 10px -3px $shadow-light;
+      background-color: v(page-background-medium);
+      color: v(text-light);
+      box-shadow: 1px 3px 10px -3px v(shadow-light);
     }
     .panel {
-      background-color: $page-background-dark;
-      color: $text-dark;
-      box-shadow: 1px 3px 10px -1px $shadow-dark;
+      background-color: v(page-background-dark);
+      color: v(text-dark);
+      box-shadow: 1px 3px 10px -1px v(shadow-dark);
     }
   }
 

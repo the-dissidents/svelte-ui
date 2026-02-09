@@ -122,7 +122,7 @@
     height: auto;
     margin: 3px;
     background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='4px' width='4px'><circle cx='2' cy='2' r='1' fill='gray' /></svg>");
-    background-repeat: repeat;
+    background-repeat: round;
     background-size: 4px;
     cursor: grab;
   }

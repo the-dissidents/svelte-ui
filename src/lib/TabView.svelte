@@ -1,17 +1,17 @@
 <script lang="ts" module>
-import { type Readable } from "svelte/store";
+import { type Writable } from "svelte/store";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type TabAPIType = {};
 export type TabPageData = {
   readonly id: string,
-  readonly header: Snippet
+  readonly header: () => Snippet | string,
 };
 export const TabAPIContext: TabAPIType = {};
 
 export type TabAPI = {
   registerPage(data: TabPageData): void,
-  selected(): Readable<string | undefined>
+  selected(): Writable<string | undefined>
 };
 </script>
 
@@ -63,11 +63,16 @@ setContext<TabAPI>(TabAPIContext, {
   <div class='header'>
     {#key update}
     {#each Pages as [id, data] (id)}
+    {@const header = data.header()}
       <button
         class:selected="{$Selected === id}"
         class='hlayout'
         onclick={() => $Selected = id}>
-        {@render data.header()}
+        {#if typeof header == 'string'}
+          {header}
+        {:else}
+          {@render header()}
+        {/if}
       </button>
     {/each}
     {/key}
@@ -77,7 +82,6 @@ setContext<TabAPI>(TabAPIContext, {
 </div>
 
 <style lang='scss'>
-  @use 'uchu.scss';
   @use 'parameters.sass' as *;
 
   .selected {
@@ -85,7 +89,7 @@ setContext<TabAPI>(TabAPIContext, {
   }
 
   button {
-    outline: none;
+    outline: none !important;
 
     &:not(.selected) {
       filter: contrast(10%) !important;
@@ -97,10 +101,10 @@ setContext<TabAPI>(TabAPIContext, {
 
   .header, .selected {
     @media (prefers-color-scheme: light) {
-      border-bottom: 1px solid $tab-accent-light;
+      border-bottom: 1px solid v(tab-accent-light);
     }
     @media (prefers-color-scheme: dark) {
-      border-bottom: 1px solid $tab-accent-dark;
+      border-bottom: 1px solid v(tab-accent-dark);
     }
   }
 

@@ -48,6 +48,9 @@ importers:
       publint:
         specifier: ^0.3.17
         version: 0.3.17
+      sass:
+        specifier: ^1.97.3
+        version: 1.97.3
       sass-embedded:
         specifier: ^1.97.3
         version: 1.97.3
@@ -57,6 +60,9 @@ importers:
       svelte-check:
         specifier: ^4.3.6
         version: 4.3.6(picomatch@4.0.3)(svelte@5.50.0)(typescript@5.9.3)
+      svelte-preprocess:
+        specifier: ^6.0.3
+        version: 6.0.3(postcss-load-config@3.1.4(postcss@8.5.6))(postcss@8.5.6)(sass@1.97.3)(svelte@5.50.0)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1334,6 +1340,43 @@ packages:
       svelte:
         optional: true
 
+  svelte-preprocess@6.0.3:
+    resolution: {integrity: sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==}
+    engines: {node: '>= 18.0.0'}
+    peerDependencies:
+      '@babel/core': ^7.10.2
+      coffeescript: ^2.5.1
+      less: ^3.11.3 || ^4.0.0
+      postcss: ^7 || ^8
+      postcss-load-config: '>=3'
+      pug: ^3.0.0
+      sass: ^1.26.8
+      stylus: '>=0.55'
+      sugarss: ^2.0.0 || ^3.0.0 || ^4.0.0
+      svelte: ^4.0.0 || ^5.0.0-next.100 || ^5.0.0
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      coffeescript:
+        optional: true
+      less:
+        optional: true
+      postcss:
+        optional: true
+      postcss-load-config:
+        optional: true
+      pug:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      typescript:
+        optional: true
+
   svelte2tsx@0.7.47:
     resolution: {integrity: sha512-1aw/MFKVPM96OBevJdC12do2an9t5Zwr3Va9amLgTLpJje36ibD1iIHpuqCYWUrdR9vw6g6btKGQPmsqE8ZYCw==}
     peerDependencies:
@@ -2560,7 +2603,6 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.6
-    optional: true
 
   scule@1.3.0: {}
 
@@ -2614,6 +2656,15 @@ snapshots:
       postcss-selector-parser: 7.1.1
     optionalDependencies:
       svelte: 5.50.0
+
+  svelte-preprocess@6.0.3(postcss-load-config@3.1.4(postcss@8.5.6))(postcss@8.5.6)(sass@1.97.3)(svelte@5.50.0)(typescript@5.9.3):
+    dependencies:
+      svelte: 5.50.0
+    optionalDependencies:
+      postcss: 8.5.6
+      postcss-load-config: 3.1.4(postcss@8.5.6)
+      sass: 1.97.3
+      typescript: 5.9.3
 
   svelte2tsx@0.7.47(svelte@5.50.0)(typescript@5.9.3):
     dependencies:

@@ -4,7 +4,6 @@
   Color.ColorSpace.register(Color.HSL);
   Color.ColorSpace.register(Color.OKLCH);
 
-  import "../lib/main.sass";
   import "../lib/utility.scss";
 
   import Collapsible from "$lib/Collapsible.svelte";
@@ -41,7 +40,10 @@
   let infoBanner = $state(false);
 </script>
 
-<style lang="scss">
+<style lang="scss" global>
+  @use '../lib/main.sass' as *;
+  @include configure();
+
   article {
     width: 100vw;
     display: flex;
@@ -245,19 +247,20 @@
           </TabPage>
         </TabView>
       </div>
-      <Resizer control={leftPane} vertical={true}/>
-      <div class="vlayout flexgrow">
+      <Resizer first={leftPane} vertical={true}/>
+      <div class="vlayout flexgrow" style="overflow-y: scroll;">
         <p>
           You can reorder this list
         </p>
         <OrderableList bind:list={list}>
           {#snippet row(item)}
-            <input type="text" bind:value={item.text} style="width: 100%" />
+            <input type="text" bind:value={item.text}
+              style="width: 100%; height: 1lh;" />
           {/snippet}
         </OrderableList>
       </div>
     </div>
-    <Resizer control={topPane}/>
+    <Resizer first={topPane}/>
     <div>
       <button onclick={() => errorBanner = true}>
         show error banner

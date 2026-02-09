@@ -1,26 +1,47 @@
 <script lang="ts">
-import { getContext, type Snippet } from "svelte";
+import { getContext, untrack, type Snippet } from "svelte";
 import { TabAPIContext, type TabAPI, type TabPageData } from "./TabView.svelte";
 
 interface Props {
   id: string;
-  header: Snippet;
+  header: Snippet | string;
+  lazy?: boolean;
+  active?: boolean;
+  onActivate?: () => void;
   children?: Snippet;
 }
 
-let { id, header, children }: Props = $props();
+let {
+  id, header, children, lazy,
+  active = $bindable(false),
+  onActivate
+}: Props = $props();
 
 const tabApi: TabAPI = getContext(TabAPIContext);
 
-// svelte-ignore state_referenced_locally
-const page: TabPageData = {id, header};
+const page: TabPageData = {
+  id,
+  header: () => header
+};
 
 tabApi.registerPage(page);
 const selection = tabApi.selected();
+selection.subscribe((x) => { active = x === id; });
+
+  $effect(() => {
+    if (active) {
+      untrack(() => {
+        selection.set(id);
+        onActivate?.();
+      });
+    }
+  });
 </script>
 
-<div class={['page', 'fill', {active: $selection === id}]}>
-{@render children?.()}
+<div class={['page', 'fill', {active}]}>
+  {#if !lazy || active}
+    {@render children?.()}
+  {/if}
 </div>
 
 <style>

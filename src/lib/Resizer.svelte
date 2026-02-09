@@ -1,15 +1,15 @@
 <script lang="ts">
 interface Props {
-  control: HTMLElement;
-  control2?: HTMLElement | null;
+  first: HTMLElement;
+  second?: HTMLElement | null;
   vertical?: boolean;
   reverse?: boolean;
   minValue?: number;
 }
 
 let {
-  control = $bindable(),
-  control2 = $bindable(null),
+  first = $bindable(),
+  second = $bindable(null),
   vertical = false,
   reverse = false,
   minValue = 10,
@@ -20,12 +20,12 @@ function ondrag(ev: MouseEvent) {
   let f = reverse ? -1 : 1;
   if (vertical) {
     let val = Math.max(orig + (ev.clientX - cx) * f, minValue);
-    if (control2) control2.style.width = (orig2 + val - orig) + 'px';
-    control.style.width = val + 'px';
+    if (second) second.style.width = (orig2 + val - orig) + 'px';
+    first.style.width = val + 'px';
   } else {
     let val = Math.max(orig + (ev.clientY - cy) * f, minValue);
-    if (control2) control2.style.height = (orig2 + val - orig) + 'px';
-    control.style.height = val + 'px';
+    if (second) second.style.height = (orig2 + val - orig) + 'px';
+    first.style.height = val + 'px';
   }
 }
 </script>
@@ -36,9 +36,9 @@ function ondrag(ev: MouseEvent) {
   onmousedown={(ev) => {
 	  cx = ev.clientX;
     cy = ev.clientY;
-    orig = vertical ? control.offsetWidth : control.offsetHeight;
-    if (control2) {
-      orig2 = vertical ? control2.offsetWidth : control2.offsetHeight;
+    orig = vertical ? first.offsetWidth : first.offsetHeight;
+    if (second) {
+      orig2 = vertical ? second.offsetWidth : second.offsetHeight;
     }
     document.addEventListener('mousemove', ondrag);
     document.addEventListener('mouseup', () => {
@@ -54,19 +54,19 @@ function ondrag(ev: MouseEvent) {
 
 @media (prefers-color-scheme: light) {
   .inside {
-    background-color: $separator-light;
+    background-color: v(separator-light);
   }
   :hover .inside {
-    background-color: $accent1-border-light;
+    background-color: v(accent1-border-light);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .inside {
-    background-color: $separator-dark;
+    background-color: v(separator-dark);
   }
   :hover .inside {
-    background-color: $accent1-border-dark;
+    background-color: v(accent1-border-dark);
   }
 }
 

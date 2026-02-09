@@ -1,60 +1,85 @@
 @use 'uchu'
+@use 'sass:map'
+@use 'sass:list'
+@use "sass:meta"
 
 // Parameters
 
-$fontFamily:  system-ui !default
-$fontSize:    1rem      !default
+$cfg: (
+  ui-font-family:   system-ui,
+  mono-font-family: monospace,
+  input-font-size:  0.8rem,
+  text-font-size:   0.85rem,
 
-$page-background-light:   #fafafa   !default
-$page-background-medium:  uchu.$yin-2 !default
-$page-background-dark:    uchu.$yin-9 !default
+  page-background-light:   #fafafa,
+  page-background-medium:  uchu.$yin-2,
+  page-background-dark:    uchu.$yin-9,
 
-$text-light:      uchu.$yin          !default
-$text-dark:       uchu.$yang         !default
-$h5-text-light:   uchu.$yin-6        !default
-$h5-text-dark:    uchu.$yin-3        !default
+  text-light:      uchu.$yin,
+  text-dark:       uchu.$yang,
+  h5-text-light:   uchu.$yin-6,
+  h5-text-dark:    uchu.$yin-3,
 
-$disabled-text-light:   uchu.$gray-9       !default
-$disabled-text-dark:    uchu.$gray-9       !default
-$disabled-back-light:   uchu.$gray-1       !default
-$disabled-back-dark:    uchu.$yin-7        !default
+  disabled-text-light:   uchu.$gray-9,
+  disabled-text-dark:    uchu.$gray-9,
+  disabled-back-light:   uchu.$gray-1,
+  disabled-back-dark:    uchu.$yin-7,
 
-$box-border-light:      uchu.$gray-4       !default
-$box-border-dark:       uchu.$yin-8        !default
-$box-back-light:        white              !default
-$box-back-dark:         uchu.$yin-8        !default
+  box-border-light:      uchu.$gray-4,
+  box-border-dark:       uchu.$yin-8,
+  box-back-light:        white,
+  box-back-dark:         uchu.$yin-8,
 
-$small-border-light:    uchu.$gray-4       !default
-$small-border-dark:     uchu.$yin-7        !default
+  small-border-light:    uchu.$gray-4,
+  small-border-dark:     uchu.$yin-7,
 
-$button-back-light:     white              !default
-$button-back-dark:      uchu.$yin-7        !default
-$button-disabled-light: uchu.$gray-1       !default
-$button-disabled-dark:  uchu.$yin-7        !default
+  button-back-light:     white,
+  button-back-dark:      uchu.$yin-7,
+  button-disabled-light: uchu.$gray-1,
+  button-disabled-dark:  uchu.$yin-7,
 
-$accent1-back-light:    uchu.$red-1        !default
-$accent1-back-dark:     Teal               !default
-$accent1-border-light:  uchu.$red-2        !default
-$accent1-border-dark:   LightSeaGreen      !default
+  accent1-back-light:    uchu.$red-1,
+  accent1-back-dark:     Teal,
+  accent1-border-light:  uchu.$red-2,
+  accent1-border-dark:   LightSeaGreen,
 
-$accent2-back-light:    uchu.$pink-7       !default
-$accent2-back-dark:     uchu.$blue-4       !default
-$accent2-border-light:  uchu.$pink-8       !default
-$accent2-border-dark:   uchu.$blue-8       !default
+  accent2-back-light:    uchu.$pink-7,
+  accent2-back-dark:     uchu.$blue-4,
+  accent2-border-light:  uchu.$pink-8,
+  accent2-border-dark:   uchu.$blue-8,
 
-$slider-track-light:    uchu.$yin-1        !default
-$slider-track-dark:     uchu.$yin-8        !default
+  slider-track-light:    uchu.$yin-1,
+  slider-track-dark:     uchu.$yin-8,
 
-$separator-light:       uchu.$yin-2        !default
-$separator-dark:        uchu.$yin-7        !default
-$separator-minor-light: uchu.$gray-2       !default
-$separator-minor-dark:  uchu.$yin-7        !default
+  separator-light:       uchu.$yin-2,
+  separator-dark:        uchu.$yin-7,
+  separator-minor-light: uchu.$gray-2,
+  separator-minor-dark:  uchu.$yin-7,
 
-$shadow-light:  rgba(128, 128, 128, 0.5) !default
-$shadow-dark:   rgba(128, 128, 128, 0.5) !default
+  shadow-light:  rgba(128, 128, 128, 0.5),
+  shadow-dark:   rgba(128, 128, 128, 0.5),
 
-$tab-accent-light: uchu.$blue-4 !default
-$tab-accent-dark:  slategray    !default
+  tab-accent-light: uchu.$blue-4,
+  tab-accent-dark:  slategray,
 
-$border-radius-large: 3px         !default
-$border-radius-small: 2px         !default
+  border-radius-large: 3px,
+  border-radius-small: 2px,
+)
+
+@mixin configure($args...)
+  $cfg: map.merge($cfg, meta.keywords($args)) !global
+  @at-root :root
+    @each $key, $value in $cfg
+      --#{$key}: #{$value}
+
+@function v($name)
+  @return var(--#{$name})
+
+@function cfg($name)
+  @return map.get($cfg, $name)
+
+@function cfge($expr, $var)
+  @if cfg($var) == none
+    @return none
+  @else
+    @return list.append($expr, cfg($var))
