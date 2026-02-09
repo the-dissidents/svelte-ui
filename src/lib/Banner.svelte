@@ -4,11 +4,12 @@ const setChanged = new EventHost();
 </script>
 
 <script lang="ts">
-import { Debug } from "./Debug";
+import { Debug } from "./Debug.js";
+import { EventHost } from "./EventHost.js";
+
 import { XIcon } from "@lucide/svelte";
-import { EventHost } from "./EventHost";
 import { onDestroy, untrack } from "svelte";
-    import { SvelteMap } from "svelte/reactivity";
+import { SvelteMap } from "svelte/reactivity";
 
 export type BannerButton = {
   name: string,
@@ -101,7 +102,7 @@ $effect(() => {
 </dialog>
 
 <style lang='scss'>
-@use '../styles/uchu.scss';
+@use 'uchu.scss';
 
 @media (prefers-color-scheme: light) {
   dialog {

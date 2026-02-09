@@ -17,9 +17,9 @@ export function overlayMenu(
 
 <script lang="ts">
 import type { Action } from "svelte/action";
-import { Debug } from "./Debug";
 import { mount, unmount } from "svelte";
 import OverlayMenu from "./OverlayMenu.svelte";
+import { Debug } from "./Debug.js";
 
 let dialog: HTMLDialogElement | undefined = $state();
 let closed = false;
@@ -88,7 +88,7 @@ const autofocus: Action<HTMLButtonElement, string> = (node, text) => {
 </dialog>
 
 <style lang='scss'>
-  @use '../styles/uchu.scss';
+  @use 'uchu.scss';
 
   @media (prefers-color-scheme: light) {
     dialog {

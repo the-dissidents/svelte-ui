@@ -46,7 +46,7 @@ let {
 </div>
 
 <style lang='scss'>
-@use '../styles/uchu';
+@use 'uchu';
 
 @media (prefers-color-scheme: light) {
   button.collapsible {

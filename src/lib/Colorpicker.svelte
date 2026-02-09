@@ -7,9 +7,6 @@
   import Tooltip from "./Tooltip.svelte";
   import { I18n } from "./I18n.svelte";
 
-  import "../styles/main.sass";
-  import "../styles/utility.scss";
-
   type Boundary = readonly [number, number, boolean];
   type ModeInfo = {
     bounds: readonly [number, number, number],

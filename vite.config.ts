@@ -1,7 +1,6 @@
+import devtoolsJson from 'vite-plugin-devtools-json';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import Inspect from 'vite-plugin-inspect';
 
-export default defineConfig({
-	plugins: [sveltekit(), Inspect()]
-});
+export default defineConfig({ plugins: [sveltekit(), Inspect(), devtoolsJson()] });

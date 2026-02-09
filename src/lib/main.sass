@@ -1,5 +1,7 @@
-@use 'sass:list' as *
+@forward './parameters'
 @use './parameters' as *
+@use 'sass:list'
+@use 'sass:math'
 
 // #region GERNERIC
 
@@ -15,7 +17,7 @@
   @if $var == none
     @return none
   @else
-    @return append($expr, $var)
+    @return list.append($expr, $var)
 
 %reset
   margin: 0
@@ -71,8 +73,18 @@
     @include dark()
       border-bottom: c(1px solid, $separator-minor-dark)
 
+%box-focus
+  &:focus,
+  &:has(:focus)
+    @include light()
+      border: c(1px solid, $accent1-border-light)
+      outline: c(2px solid, $accent1-back-light)
+    @include dark()
+      border: c(1px solid, $accent1-border-dark)
+      outline: c(2px solid, $accent1-back-dark)
+
 %box
-  @extend %reset
+  @extend %reset, %box-focus
 
   appearance: none
 
@@ -93,19 +105,11 @@
     border: c(1px solid, $box-border-light)
     background-color: $box-back-light
     color: $text-light
-    &:focus,
-    &:has(:focus)
-      border: c(1px solid, $accent1-border-light)
-      outline: c(2px solid, $accent1-back-light)
 
   @include dark()
     border: c(1px solid, $box-border-dark)
     background-color: $box-back-dark
     color: $text-dark
-    &:focus,
-    &:has(:focus)
-      border: c(1px solid, $accent1-border-dark)
-      outline: c(2px solid, $accent1-back-dark)
 
 .lucide
   display: block
@@ -170,6 +174,10 @@ fieldset
 %button-colors
   border: none
 
+  &:focus,
+  &:has(:focus)
+    border: none
+
   @include light()
     background-color: $button-back-light
     color: $text-light
@@ -226,16 +234,10 @@ button:where(:not([data-select-trigger]))
   &:disabled
     @extend %button-disabled
 
-// #endregion
-
-// #region Text input
-
 input[type=number],
 input[type=text]
   @extend %box
   padding: 2px 3px
-
-// Textarea
 
 textarea,
 div.ProseMirror
@@ -357,6 +359,8 @@ div.combobox
 // #region Radio box & Checkbox
 
 %smallbox
+  @extend %reset, %hover-indicator, %box-focus
+
   display: inline-block
   vertical-align: sub
 
@@ -364,8 +368,6 @@ div.combobox
   height: 0.85rem
   aspect-ratio: 1 / 1
   margin: 3px 2px
-
-  @extend %hover-indicator
 
   &:disabled
     @extend %disabled-colors
@@ -417,14 +419,14 @@ input[type=checkbox].button
 label:has(input[type='checkbox'].button)
   @extend %button
 
-label:has(input[type='checkbox'].button:disabled)
-  @extend %button, %button-disabled
+  &:has(:disabled)
+    @extend %button-disabled
 
-label:has(input[type='checkbox'].button:checked)
-  @include light()
-    background-color: $accent1-back-light
-  @include dark()
-    background-color: $accent1-back-dark
+  &:has(:checked)
+    @include light()
+      background-color: $accent1-back-light
+    @include dark()
+      background-color: $accent1-back-dark
 
 // #endregion
 
@@ -436,30 +438,28 @@ input[type=range]
   width: 100%
   background: transparent
 
+  $track-height: 8px
+  $thumb-height: 16px
+
   &::-webkit-slider-thumb
     @extend %hover-indicator, %button-colors
 
     -webkit-appearance: none
-    height: 14px
-    margin-top: -1px
+    margin-top: math.div($track-height - $thumb-height, 2)
+    height: $thumb-height
     width: 16px
-    border-radius: 2px
-    // cursor: pointer;
+    border-radius: $border-radius-small
 
   &::-webkit-slider-runnable-track
     width: 100%
-    height: 12px
-    // cursor: pointer;
-    border-radius: 2px
+    height: $track-height
+    border-radius: $border-radius-large
 
     @include light()
       background: $slider-track-light
     @include dark()
       background: $slider-track-dark
 
-  // &:focus {
-  //   outline: none;
-  // }
 // #endregion
 
 // #region List box

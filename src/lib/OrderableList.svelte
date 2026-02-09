@@ -5,9 +5,10 @@
 <script lang="ts" generics="TItem extends WeakKey">
   import type { Snippet } from 'svelte';
   import { flip } from 'svelte/animate';
-  import { Debug } from './Debug';
   import type { Action } from 'svelte/action';
   import type { HTMLOlAttributes } from 'svelte/elements';
+
+  import { Debug } from './Debug.js';
 
   type Props = {
     list: TItem[],
@@ -40,11 +41,11 @@
 
 <ol {...rest}>
   {#each list as item, i (item)}
-    <li class="hlayout" 
-      animate:flip={{ duration: () => draggingItem == item ? 0 : 200 }} 
+    <li class="hlayout"
+      animate:flip={{ duration: () => draggingItem == item ? 0 : 200 }}
       use:setupRow={item}
     >
-      <div role="button" tabindex="0" class="handle" 
+      <div role="button" tabindex="0" class="handle"
         onmousedown={(ev) => {
           const elem = ev.currentTarget.parentElement;
           Debug.assert(elem !== null);
@@ -83,7 +84,7 @@
                 onreorder?.();
               }
             }
-            elem.style.transform = 
+            elem.style.transform =
               `translate(0, ${ev2.clientY - transformOffsetStart}px)`;
           }
           document.addEventListener('mousemove', move);

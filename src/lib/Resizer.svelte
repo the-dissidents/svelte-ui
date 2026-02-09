@@ -49,15 +49,15 @@ function ondrag(ev: MouseEvent) {
 </div>
 
 <style lang="scss">
-@use '../styles/parameters.sass' as *;
-@use '../styles/uchu.scss';
+@use 'parameters.sass' as *;
+@use 'uchu.scss';
 
 @media (prefers-color-scheme: light) {
   .inside {
     background-color: $separator-light;
   }
   :hover .inside {
-    background-color: uchu.$blue-3;
+    background-color: $accent1-border-light;
   }
 }
 
@@ -66,47 +66,49 @@ function ondrag(ev: MouseEvent) {
     background-color: $separator-dark;
   }
   :hover .inside {
-    background-color: uchu.$red-3;
+    background-color: $accent1-border-dark;
   }
 }
 
 .resizerH {
-  height: 8px;
+  height: 6px;
   width: 100%;
-  padding: 3px 0 4px 0;
+  padding: 4px 0;
   user-select: none; -webkit-user-select: none;
   -moz-user-select: none; -ms-user-select: none;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .resizerH .inside {
   width: 100%;
   height: 1px;
-  transform: translateY(50%);
-  /* transition: all 0.2s ease-out; */
 }
 
 .resizerH:hover .inside {
   height: 3px;
-  transform: translateY(-25%);
 }
 
 .resizerV {
   height: 100%;
-  width: 8px;
-  padding: 0 3px 0 4px;
+  width: 6px;
+  padding: 0 4px;
   user-select: none; -webkit-user-select: none;
   -moz-user-select: none; -ms-user-select: none;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .resizerV .inside {
   height: 100%;
   width: 1px;
-  transform: translateX(50%);
-  /* transition: all 0.2s ease-out; */
 }
 
 .resizerV:hover .inside {
   width: 3px;
-  transform: translateX(-25%);
 }
 </style>

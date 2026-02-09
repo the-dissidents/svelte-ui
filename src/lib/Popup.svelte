@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
-import { Debug } from './Debug';
+import { Debug } from './Debug.js';
 
 export type PopupOpen = {
   left: number, top: number, width?: number, height?: number,
@@ -78,30 +78,31 @@ export function openState() {
 </script>
 
 <style lang='scss'>
-  @use '../styles/uchu.scss';
+  @use 'parameters.sass' as *;
+  @use 'uchu.scss';
 
   @media (prefers-color-scheme: light) {
     .tooltip {
-      background-color: uchu.$yin;
-      color: uchu.$yang;
-      box-shadow: 1px 3px 10px -3px rgba(0,0,0,0.4);
+      background-color: $page-background-dark;
+      color: $text-dark;
+      box-shadow: 1px 3px 10px -3px $shadow-dark;
     }
     .panel {
-      background-color: uchu.$yang;
-      color: uchu.$yin;
-      box-shadow: 1px 3px 10px -3px rgba(0,0,0,0.4);
+      background-color: $page-background-light;
+      color: $text-light;
+      box-shadow: 1px 3px 10px -3px $shadow-light;
     }
   }
   @media (prefers-color-scheme: dark) {
     .tooltip {
-      background-color: uchu.$yin-2;
-      color: uchu.$yin;
-      box-shadow: 1px 3px 10px -3px rgba(255, 255, 255, 0.4);
+      background-color: $page-background-medium;
+      color: $text-light;
+      box-shadow: 1px 3px 10px -3px $shadow-light;
     }
     .panel {
-      background-color: uchu.$yin-9;
-      color: uchu.$yang;
-      box-shadow: 1px 3px 10px -1px rgba(0,0,0,0.4);
+      background-color: $page-background-dark;
+      color: $text-dark;
+      box-shadow: 1px 3px 10px -1px $shadow-dark;
     }
   }
 

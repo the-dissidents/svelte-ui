@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Snippet } from 'svelte';
-import { Debug } from './Debug';
+import { Debug } from './Debug.js';
 import Popup from './Popup.svelte';
 import { CircleQuestionMarkIcon } from '@lucide/svelte';
 import type { HTMLAttributes } from 'svelte/elements';

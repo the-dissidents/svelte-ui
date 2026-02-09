@@ -77,41 +77,30 @@ setContext<TabAPI>(TabAPIContext, {
 </div>
 
 <style lang='scss'>
-  @use '../styles/uchu.scss';
+  @use 'uchu.scss';
+  @use 'parameters.sass' as *;
 
-  @media (prefers-color-scheme: light) {
-    .header {
-      border-bottom: 1px solid uchu.$blue-4;
+  .selected {
+    border-bottom-width: 2px;
+  }
+
+  button {
+    outline: none;
+
+    &:not(.selected) {
+      filter: contrast(10%) !important;
     }
-    button {
-      color: uchu.$yin;
-      &:not(.selected) {
-        filter: contrast(10%) !important;
-      }
-      &:not(.selected):hover {
-        filter: contrast(50%) !important;
-      }
-    }
-    .selected {
-      border-bottom: 2px solid uchu.$blue-4;
+    &:not(.selected):hover {
+      filter: contrast(50%) !important;
     }
   }
 
-  @media (prefers-color-scheme: dark) {
-    .header {
-      border-bottom: 1px solid darkslategray;
+  .header, .selected {
+    @media (prefers-color-scheme: light) {
+      border-bottom: 1px solid $tab-accent-light;
     }
-    button {
-      color: uchu.$yang;
-      &:not(.selected) {
-        filter: contrast(10%) !important;
-      }
-      &:not(.selected):hover {
-        filter: contrast(50%) !important;
-      }
-    }
-    .selected {
-      border-bottom: 2px solid darkslategray;
+    @media (prefers-color-scheme: dark) {
+      border-bottom: 1px solid $tab-accent-dark;
     }
   }
 

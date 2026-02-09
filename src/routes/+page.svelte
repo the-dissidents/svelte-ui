@@ -4,8 +4,8 @@
   Color.ColorSpace.register(Color.HSL);
   Color.ColorSpace.register(Color.OKLCH);
 
-  import "../styles/main.sass";
-  import "../styles/utility.scss";
+  import "../lib/main.sass";
+  import "../lib/utility.scss";
 
   import Collapsible from "$lib/Collapsible.svelte";
   import NumberInput from "$lib/NumberInput.svelte";
@@ -56,6 +56,9 @@
     flex-direction: row;
     margin-bottom: 5px;
   }
+  hr {
+    margin-block: 5px;
+  }
 </style>
 
 <Banner style='error' bind:open={errorBanner}
@@ -90,11 +93,24 @@
             <Collapsible header="Styled native controls" active={true}>
               <button>button</button>
               <button disabled>disabled button</button>
-              <select>
+              <br>
+              <select value="disabled select" disabled>
+                <option>disabled select</option>
+                <option>second</option>
+                <option>third</option>
+              </select>
+              <select value="second">
                 <option>first</option>
                 <option>second</option>
                 <option>third</option>
               </select>
+              <label>
+                Slider:
+                <input type='range' min="0" max="100" value="5" />
+              </label>
+
+              <hr>
+
               <div class="hlayout" style="gap: 0 1em;">
                 <div class="vlayout">
                   <label>
@@ -231,12 +247,6 @@
       </div>
       <Resizer control={leftPane} vertical={true}/>
       <div class="vlayout flexgrow">
-
-        <label>
-          Slider:
-          <input type='range' min="0" max="100" value="5" />
-        </label>
-
         <p>
           You can reorder this list
         </p>
