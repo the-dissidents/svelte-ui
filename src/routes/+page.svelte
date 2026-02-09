@@ -95,13 +95,17 @@
         <TabView>
           <TabPage id="1">
             {#snippet header()}
-              Common (value={value})
+              Common
             {/snippet}
 
-            <label>
-              Enter a number:
-              <NumberInput bind:value step="0.01"/>
-            </label>
+            <Collapsible header={`Number is ${value}`} active={true}
+              showCheck={true} checked={true}
+            >
+              <label>
+                Enter a number:
+                <NumberInput bind:value step="0.01"/>
+              </label>
+            </Collapsible>
 
             <Collapsible header="Styled native controls" active={true}>
               <button>button</button>
@@ -127,7 +131,7 @@
               <div class="hlayout" style="gap: 0 1em;">
                 <div class="vlayout">
                   <label>
-                    <input type='checkbox'>
+                    <input type='checkbox' checked>
                     Ketchup
                   </label>
                   <label>
@@ -145,7 +149,7 @@
                     Email
                   </label>
                   <label>
-                    <input type='radio' name='1'>
+                    <input type='radio' name='1' checked>
                     Phone
                   </label>
                   <label>
@@ -192,7 +196,6 @@
               </label>
             </Collapsible>
 
-
           </TabPage>
 
           <TabPage id="2">
@@ -230,30 +233,9 @@
 
             <h5>Listbox</h5>
             <ol role="listbox" style="max-height: 250px;">
-              <li>item 1</li>
-              <li>item 2</li>
-              <li>item 3</li>
-              <li>another item</li>
-              <li>item 5</li>
-              <li>item 6</li>
-              <li>item 7</li>
-              <li>another item</li>
-              <li>item 9</li>
-              <li>item 10</li>
-              <li>item 11</li>
-              <li>another item</li>
-              <li>item 1</li>
-              <li>item 2</li>
-              <li>item 3</li>
-              <li>another item</li>
-              <li>item 5</li>
-              <li>item 6</li>
-              <li>item 7</li>
-              <li>another item</li>
-              <li>item 9</li>
-              <li>item 10</li>
-              <li>item 11</li>
-              <li>another item</li>
+              {#each list as {text}}
+                <li>{text}</li>
+              {/each}
             </ol>
           </TabPage>
         </TabView>
@@ -263,9 +245,9 @@
         <h5>ListView</h5>
         <ListView style="max-height: 300px"
           columns={[
-            ['a', { header: 'number', align: 'end', width: 'max-content' }],
+            ['a', { header: 'number', align: 'end' }],
             ['b', { header: 'string' }],
-            ['c', { header: 'boolean' }],
+            ['c', { header: 'ok' }],
             ['d', { header: 'button' }]
           ]}
           items={list2}

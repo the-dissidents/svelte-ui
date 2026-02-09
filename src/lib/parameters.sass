@@ -51,7 +51,12 @@ $cfg: (
   slider-track-light:    uchu.$yin-1,
   slider-track-dark:     uchu.$yin-8,
 
-  separator-light:       uchu.$yin-2,
+  header-back-light:     uchu.$gray-1,
+  header-back-dark:      uchu.$yin-8,
+  header-border-light:   none,
+  header-border-dark:    uchu.$yin-9,
+
+  separator-light:       uchu.$gray-4,
   separator-dark:        uchu.$yin-7,
   separator-minor-light: uchu.$gray-2,
   separator-minor-dark:  uchu.$yin-7,
@@ -61,6 +66,13 @@ $cfg: (
 
   tab-accent-light: uchu.$blue-4,
   tab-accent-dark:  slategray,
+
+  list-header-light:    uchu.$gray-1,
+  list-header-dark:     uchu.$yin-8,
+  list-border-light:    uchu.$gray-4,
+  list-border-dark:     uchu.$yin-8,
+  list-selection-light:  uchu.$red-1,
+  list-selection-dark:  LightSeaGreen,
 
   border-radius-large: 3px,
   border-radius-small: 2px,
@@ -83,3 +95,18 @@ $cfg: (
     @return none
   @else
     @return list.append($expr, cfg($var))
+
+@mixin light
+  @media (prefers-color-scheme: light)
+    @content
+
+@mixin dark
+  @media (prefers-color-scheme: dark)
+    @content
+
+@mixin hover-indicator
+  &:hover
+    @include light()
+      filter: brightness(97%)
+    @include dark()
+      filter: brightness(110%)

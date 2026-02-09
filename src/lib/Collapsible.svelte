@@ -46,11 +46,13 @@ let {
 </div>
 
 <style lang='scss'>
+@use './parameters.sass' as *;
 @use 'uchu';
 
 @media (prefers-color-scheme: light) {
   button.collapsible {
-    background-color: uchu.$gray-1;
+    background-color: v(header-back-light);
+    outline: 1px solid v(header-border-light);
   }
   button.checked {
     background-color: uchu.$red-1 !important;
@@ -63,8 +65,8 @@ let {
 
 @media (prefers-color-scheme: dark) {
   button.collapsible {
-    outline: 1px solid uchu.$yin-8;
-    background-color: uchu.$yin-9;
+    outline: 1px solid v(header-border-dark);
+    background-color: v(header-back-dark);
   }
   button.checked {
     background-color: uchu.$green-9 !important;

@@ -4,7 +4,7 @@
 
 	interface Column {
 		header: string;
-		width?: string; // e.g., '1fr', '100px'
+		width?: string;
     align?: 'start' | 'end' | 'center';
 	}
 
@@ -15,12 +15,16 @@
 		columns: [ColId, Column][];
 		loading?: boolean;
     style?: string;
+    canSelect?: boolean;
+    selectedIndex?: number;
 		onEndReached?: () => void;
 	}
 
 	let {
 		items,
 		columns,
+    selectedIndex = $bindable(),
+    canSelect = false,
 		loading = false,
 		onEndReached,
     style,
@@ -30,9 +34,8 @@
 	let sentinel: HTMLDivElement;
 	let observer: IntersectionObserver;
 
-	// Calculate grid template based on column definitions
 	let gridTemplate = $derived(
-    columns.map(([_, c]) => c.width ?? '1fr').join(' '));
+    columns.map(([_, c]) => c.width ?? 'auto').join(' '));
 
 	onMount(() => {
 		if (onEndReached) {
@@ -57,28 +60,37 @@
 </script>
 
 <div class="list-view" role='listbox' style={style ?? ''}>
-	<div class="header" role='listitem' style:grid-template-columns={gridTemplate}>
-		{#each columns as [_, col]}
-			<div class="header-cell"
-        style:text-align={col.align ?? 'start'}
-      >
-        {col.header}
-      </div>
-		{/each}
-	</div>
-
-	<div class="body">
-		{#each items as item, i (item)}
-			<div class="row" role='listitem' style:grid-template-columns={gridTemplate}>
-        {#each columns as [id, col]}
-          <div class="cell"
+	<div class="grid" style:grid-template-columns={gridTemplate}>
+    <div class="row header" role='listitem'>
+      {#each columns as [_, col]}
+          <div class="header-cell"
             style:text-align={col.align ?? 'start'}
           >
-            {@render (snippets as unknown as ColumnSnippets)[id](item, i, id)}
+            {col.header}
           </div>
-        {/each}
-			</div>
-		{/each}
+      {/each}
+    </div>
+
+    <div class="body">
+      {#each items as item, i (item)}
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+        <div role='listitem'
+          class={{active: selectedIndex == i, row: true}}
+          onclick={() => {
+            if (canSelect) selectedIndex = i
+          }}
+        >
+          {#each columns as [id, col]}
+            <div class="cell"
+              style:text-align={col.align ?? 'start'}
+            >
+              {@render (snippets as unknown as ColumnSnippets)[id](item, i, id)}
+            </div>
+          {/each}
+        </div>
+      {/each}
+    </div>
 
 		<div bind:this={sentinel} class="sentinel"></div>
 
@@ -88,42 +100,80 @@
 	</div>
 </div>
 
-<style>
+<style lang='scss'>
+  @use './parameters.sass' as *;
+
 	.list-view {
 		display: flex;
 		flex-direction: column;
-		border: 1px solid #ccc;
+    padding: 0;
+
+    @include light() {
+      border-color: v(list-border-light);
+    }
+    @include dark() {
+      border-color: v(list-border-dark);
+    }
 	}
 
-	.header {
+	.grid {
 		display: grid;
-    gap: 8px;
-		border-bottom: 1px solid #ccc;
-		font-weight: bold;
+    gap: 0 8px;
+		overflow-y: auto;
 	}
+
+  .row {
+    grid-column: 1 / -1;
+		display: grid;
+    grid-template-columns: subgrid;
+    background-color: v(box-back-light);
+
+    &:not(.header) {
+      @include hover-indicator;
+    }
+  }
+
+  .body {
+    grid-column: 1 / -1;
+		display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .header.header.header {
+    position: sticky;
+    top: 0;
+    padding-block: 5px;
+    z-index: 1;
+
+    @include light() {
+      border-bottom-color: v(list-border-light);
+      background-color: v(list-header-light);
+    }
+    @include dark() {
+      border-bottom-color: v(list-border-dark);
+      background-color: v(list-header-dark);
+    }
+  }
 
 	.header-cell {
 		white-space: nowrap;
-		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.body {
-		overflow-y: auto;
-		flex: 1;
-	}
-
-	.row {
-		display: grid;
-    gap: 8px;
-	}
-
-	.list-view .cell {
+	.cell {
 		white-space: nowrap;
-		overflow: hidden;
 		text-overflow: ellipsis;
 		align-self: center;
 	}
+
+  .active {
+    @include light() {
+      background-color: v(list-selection-light);
+    }
+    @include dark() {
+      background-color: v(list-selection-dark);
+    }
+  }
 
 	.sentinel {
 		height: 1px;

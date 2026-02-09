@@ -5,14 +5,6 @@
 
 // #region GERNERIC
 
-@mixin light
-  @media (prefers-color-scheme: light)
-    @content
-
-@mixin dark
-  @media (prefers-color-scheme: dark)
-    @content
-
 %reset
   text-decoration: none
   font-family: cfg(ui-font-family)
@@ -154,13 +146,6 @@ fieldset
 
 // #region Buttons
 
-%hover-indicator
-  &:hover
-    @include light()
-      filter: brightness(97%)
-    @include dark()
-      filter: brightness(110%)
-
 %button-colors
   border: none
 
@@ -179,7 +164,8 @@ fieldset
     box-shadow: cfge(0 1px 3px, shadow-dark)
 
 %button
-  @extend %box, %hover-indicator, %button-colors
+  @extend %box, %button-colors
+  @include hover-indicator
 
   appearance: none
   display: inline-block
@@ -349,7 +335,8 @@ div.combobox
 // #region Radio box & Checkbox
 
 %smallbox
-  @extend %reset, %hover-indicator, %box-focus
+  @extend %reset, %box-focus
+  @include hover-indicator
 
   display: inline-block
   vertical-align: sub
@@ -429,20 +416,21 @@ input[type=range]
   background: transparent
 
   $track-height: 8px
-  $thumb-height: 16px
+  $thumb-height: 14px
 
   &::-webkit-slider-thumb
-    @extend %hover-indicator, %button-colors
+    @extend %button-colors
+    @include hover-indicator
 
     -webkit-appearance: none
     margin-top: math.div($track-height - $thumb-height, 2)
-    height: cfg(thumb-height)
+    height: $thumb-height
     width: 16px
     border-radius: cfg(border-radius-small)
 
   &::-webkit-slider-runnable-track
     width: 100%
-    height: cfg(track-height)
+    height: $track-height
     border-radius: cfg(border-radius-large)
 
     @include light()
@@ -467,16 +455,17 @@ input[type=range]
   border-radius: 3px
   list-style: none
 
-*[role='listbox'] > li, *[role='listitem']
-  width: auto
-  display: block
-  font-family: cfg(ui-font-family)
-  font-size: cfg(text-font-size)
-  line-height: 1.3
-  padding: 3px 6px
-  user-select: auto
-  -webkit-user-select: auto
+  & > li, [role='listitem']
+    font-family: cfg(ui-font-family)
+    font-size: cfg(text-font-size)
+    line-height: 1.3
+    padding: 3px 6px
 
-  @extend %item-separator
+    &:not(.header)
+      @extend %item-separator
+
+    &.header
+      font-weight: bold
+      @extend %separator
 
 // #endregion
