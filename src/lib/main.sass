@@ -454,7 +454,7 @@ input[type=range]
 
 // #region List box
 
-ol[role='listbox']
+*[role='listbox']
   @extend %box
 
   display: flex
@@ -467,7 +467,7 @@ ol[role='listbox']
   border-radius: 3px
   list-style: none
 
-ol[role='listbox'] > li
+*[role='listbox'] > li, *[role='listitem']
   width: auto
   display: block
   font-family: cfg(ui-font-family)

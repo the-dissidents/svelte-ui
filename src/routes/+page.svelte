@@ -16,22 +16,33 @@
   import Resizer from "$lib/Resizer.svelte";
   import Banner from "$lib/Banner.svelte";
   import { overlayMenu } from "$lib/OverlayMenu.svelte";
+  import ListView from "$lib/ListView.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
 
-  let list = $state([
-    {text: '123'},
-    {text: 'abc'},
-    {text: '543t635'},
-    {text: 'aeewwwbc'},
-    {text: 'abdfcc'},
-    {text: '12112223'},
-    {text: 'ab33333c'},
-    {text: '543tpppp35'},
-    {text: 'aeewaazzzwwbc'},
-    {text: 'abdfxxxxcc'},
-  ]);
+  function randomString(len = 15) {
+    let cps: number[] = [];
+    for (let i = 0; i < len; i++)
+      cps.push(Math.floor(Math.random() * (122 - 65)) + 65);
+    return String.fromCharCode(...cps);
+  }
+
+  let list2 = $state<{
+      a: number;
+      b: string;
+      c: boolean;
+  }[]>([]);
+  for (let i = 0; i < 50; i++)
+    list2.push({
+      a: Math.round(Math.random() * 1000),
+      b: randomString(),
+      c: Math.random() > 0.3
+    });
+
+  let list = $state<{text: string}[]>([]);
+  for (let i = 0; i < 10; i++)
+    list.push({text: randomString(Math.random() * 10 + 5)});
 
   let leftPane = $state<HTMLElement>();
   let topPane = $state<HTMLElement>();
@@ -248,10 +259,31 @@
         </TabView>
       </div>
       <Resizer first={leftPane} vertical={true}/>
-      <div class="vlayout flexgrow" style="overflow-y: scroll;">
-        <p>
-          You can reorder this list
-        </p>
+      <div class="flexgrow" style="overflow-y: scroll;">
+        <h5>ListView</h5>
+        <ListView style="max-height: 300px"
+          columns={[
+            ['a', { header: 'number', align: 'end', width: 'max-content' }],
+            ['b', { header: 'string' }],
+            ['c', { header: 'boolean' }],
+            ['d', { header: 'button' }]
+          ]}
+          items={list2}
+        >
+          {#snippet a(item)}
+            {item.a}
+          {/snippet}
+          {#snippet b(item)}
+            {item.b}
+          {/snippet}
+          {#snippet c(item)}
+            {item.c ? '✅' : '❌'}
+          {/snippet}
+          {#snippet d()}
+            <button>hi</button>
+          {/snippet}
+        </ListView>
+        <h5>You can reorder this list</h5>
         <OrderableList bind:list={list}>
           {#snippet row(item)}
             <input type="text" bind:value={item.text}

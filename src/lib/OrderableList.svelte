@@ -12,6 +12,9 @@
 
   type Props = {
     list: TItem[],
+    /**
+     * Snippet to generate each row from the corresponding item object.
+     */
     row: Snippet<[item: TItem, i: number]>,
     /**
      * Footer of the list, e.g. an 'add item' button.
