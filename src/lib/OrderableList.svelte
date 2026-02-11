@@ -11,9 +11,12 @@
   import { Debug } from './Debug.js';
 
   type Props = {
+    /**
+     * A list containing arbitrary data entries. You don't need to `bind:` it because this component only reorders the list without reassigning to it.
+     */
     list: TItem[],
     /**
-     * Snippet to generate each row from the corresponding item object.
+     * Snippet to generate each row from the corresponding entry object.
      */
     row: Snippet<[item: TItem, i: number]>,
     /**
@@ -30,7 +33,7 @@
     onsubmit?: () => void
   } & HTMLOlAttributes;
 
-  let { list = $bindable(), row, footer, onreorder, onsubmit, ...rest }: Props = $props();
+  let { list, row, footer, onreorder, onsubmit, ...rest }: Props = $props();
   let itemToRow = new WeakMap<WeakKey, HTMLLIElement>;
   let draggingItem: TItem | undefined = $state(undefined);
   let draggingIndex = -1, draggingIndexStart = -1;

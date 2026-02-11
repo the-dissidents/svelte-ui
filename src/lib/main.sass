@@ -70,7 +70,7 @@
       outline: cfge(2px solid, accent1-back-dark)
 
 %box
-  @extend %reset, %box-focus
+  @extend %reset
 
   appearance: none
 
@@ -151,7 +151,10 @@ fieldset
 
   &:focus,
   &:has(:focus)
-    border: none
+    @include light()
+      outline: cfge(2px solid, accent1-back-light)
+    @include dark()
+      outline: cfge(2px solid, accent1-back-dark)
 
   @include light()
     background-color: cfg(button-back-light)
@@ -212,19 +215,19 @@ button:where(:not([data-select-trigger]))
 
 input[type=number],
 input[type=text]
-  @extend %box
+  @extend %box, %box-focus
   padding: 2px 3px
 
 textarea,
 div.ProseMirror
-  @extend %box
+  @extend %box, %box-focus
 
 // #endregion
 
 // #region Select
 
 %select
-  @extend %box
+  @extend %box, %box-focus
 
 %select-trigger
   background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'><text x='0' y='10' fill='gray'>▾</text></svg>")
@@ -303,7 +306,7 @@ div.combobox
   @extend %combobox
 
   & [data-combobox-input]
-    @extend %box
+    @extend %box, %box-focus
 
     padding: 2px 5px 2px 5px
     flex-grow: 1

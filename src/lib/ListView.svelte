@@ -1,23 +1,25 @@
 <script lang="ts" generics="TItem extends WeakKey, ColId extends string">
   import type { Snippet } from 'svelte';
-	import { onMount, onDestroy } from 'svelte';
+	// import { onMount, onDestroy } from 'svelte';
 
 	interface Column {
 		header: string;
 		width?: string;
     align?: 'start' | 'end' | 'center';
+    ellipsis?: boolean;
 	}
 
-  type ColumnSnippets = {[C in ColId]: Snippet<[TItem, number, C]>};
+  type ColumnSnippets = {[C in ColId]: Snippet<[item: TItem, i: number, col: C]>};
 
 	type Props = ColumnSnippets & {
 		items: TItem[];
 		columns: [ColId, Column][];
-		loading?: boolean;
     style?: string;
     canSelect?: boolean;
     selectedIndex?: number;
-		onEndReached?: () => void;
+    onClickItem?: (x: TItem) => void;
+		// loading?: boolean;
+		// onEndReached?: () => void;
 	}
 
 	let {
@@ -25,38 +27,39 @@
 		columns,
     selectedIndex = $bindable(),
     canSelect = false,
-		loading = false,
-		onEndReached,
+		// loading = false,
+		// onEndReached,
     style,
+    onClickItem,
     ...snippets
 	}: Props = $props();
 
 	let sentinel: HTMLDivElement;
-	let observer: IntersectionObserver;
+	// let observer: IntersectionObserver;
 
 	let gridTemplate = $derived(
     columns.map(([_, c]) => c.width ?? 'auto').join(' '));
 
-	onMount(() => {
-		if (onEndReached) {
-			observer = new IntersectionObserver((entries) => {
-				const entry = entries[0];
-				if (entry.isIntersecting && !loading) {
-					onEndReached();
-				}
-			}, {
-				root: null, // viewport
-				rootMargin: '100px', // Pre-fetch before hitting exact bottom
-				threshold: 0
-			});
+	// onMount(() => {
+	// 	if (onEndReached) {
+	// 		observer = new IntersectionObserver((entries) => {
+	// 			const entry = entries[0];
+	// 			if (entry.isIntersecting && !loading) {
+	// 				onEndReached();
+	// 			}
+	// 		}, {
+	// 			root: null, // viewport
+	// 			rootMargin: '100px', // Pre-fetch before hitting exact bottom
+	// 			threshold: 0
+	// 		});
 
-			if (sentinel) observer.observe(sentinel);
-		}
-	});
+	// 		if (sentinel) observer.observe(sentinel);
+	// 	}
+	// });
 
-	onDestroy(() => {
-		if (observer) observer.disconnect();
-	});
+	// onDestroy(() => {
+	// 	if (observer) observer.disconnect();
+	// });
 </script>
 
 <div class="list-view" role='listbox' style={style ?? ''}>
@@ -64,6 +67,7 @@
     <div class="row header" role='listitem'>
       {#each columns as [_, col]}
           <div class="header-cell"
+            class:ellipsis={col.ellipsis}
             style:text-align={col.align ?? 'start'}
           >
             {col.header}
@@ -78,11 +82,13 @@
         <div role='listitem'
           class={{active: selectedIndex == i, row: true}}
           onclick={() => {
-            if (canSelect) selectedIndex = i
+            if (canSelect) selectedIndex = i;
+            onClickItem?.(item);
           }}
         >
           {#each columns as [id, col]}
             <div class="cell"
+              class:ellipsis={col.ellipsis}
               style:text-align={col.align ?? 'start'}
             >
               {@render (snippets as unknown as ColumnSnippets)[id](item, i, id)}
@@ -94,7 +100,7 @@
 
 		<div bind:this={sentinel} class="sentinel"></div>
 
-		{#if loading}
+		{#if false}
 			<div class="loading-indicator">Loading...</div>
 		{/if}
 	</div>
@@ -126,10 +132,16 @@
     grid-column: 1 / -1;
 		display: grid;
     grid-template-columns: subgrid;
-    background-color: v(box-back-light);
 
     &:not(.header) {
       @include hover-indicator;
+
+      @include light() {
+        background-color: v(box-back-light);
+      }
+      @include dark() {
+        background-color: v(box-back-dark);
+      }
     }
   }
 
@@ -162,9 +174,13 @@
 
 	.cell {
 		white-space: nowrap;
-		text-overflow: ellipsis;
 		align-self: center;
 	}
+
+  .ellipsis {
+    overflow: hidden;
+		text-overflow: ellipsis;
+  }
 
   .active {
     @include light() {
@@ -179,10 +195,10 @@
 		height: 1px;
 	}
 
-	.loading-indicator {
-		padding: 10px;
-		text-align: center;
-		color: #666;
-		font-style: italic;
-	}
+	// .loading-indicator {
+	// 	padding: 10px;
+	// 	text-align: center;
+	// 	color: #666;
+	// 	font-style: italic;
+	// }
 </style>

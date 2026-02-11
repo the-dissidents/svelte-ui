@@ -2,8 +2,11 @@
   import * as Color from "colorjs.io/fn";
 
   function tryRegister(s: Color.ColorSpace) {
-    if (!Color.ColorSpace.registry[s.id])
+    console.log(':', s.id);
+    if (!Color.ColorSpace.registry[s.id]) {
       Color.ColorSpace.register(s);
+      console.log('register', s.id);
+    }
   }
 
   tryRegister(Color.sRGB);

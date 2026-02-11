@@ -28,7 +28,7 @@
     return String.fromCharCode(...cps);
   }
 
-  let list2 = $state<{
+  const list2 = $state<{
       a: number;
       b: string;
       c: boolean;
@@ -36,11 +36,11 @@
   for (let i = 0; i < 50; i++)
     list2.push({
       a: Math.round(Math.random() * 1000),
-      b: randomString(),
+      b: randomString(Math.random() * 50 + 5),
       c: Math.random() > 0.3
     });
 
-  let list = $state<{text: string}[]>([]);
+  const list = $state<{text: string}[]>([]);
   for (let i = 0; i < 10; i++)
     list.push({text: randomString(Math.random() * 10 + 5)});
 
@@ -243,10 +243,10 @@
       <Resizer first={leftPane} vertical={true}/>
       <div class="flexgrow" style="overflow-y: scroll;">
         <h5>ListView</h5>
-        <ListView style="max-height: 300px"
+        <ListView style="max-height: 300px; overflow-x:hidden;"
           columns={[
             ['a', { header: 'number', align: 'end' }],
-            ['b', { header: 'string' }],
+            ['b', { header: 'string', width: '1fr', ellipsis: true }],
             ['c', { header: 'ok' }],
             ['d', { header: 'button' }]
           ]}
@@ -266,7 +266,7 @@
           {/snippet}
         </ListView>
         <h5>You can reorder this list</h5>
-        <OrderableList bind:list={list}>
+        <OrderableList list={list}>
           {#snippet row(item)}
             <input type="text" bind:value={item.text}
               style="width: 100%; height: 1lh;" />

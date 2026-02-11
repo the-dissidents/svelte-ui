@@ -10,5 +10,6 @@ export { default as Resizer } from "./Resizer.svelte";
 export { default as TabView } from "./TabView.svelte";
 export { default as TabPage } from "./TabPage.svelte";
 export { default as Tooltip } from "./Tooltip.svelte";
+export { default as ListView } from "./ListView.svelte";
 
 export * from "./OverlayMenu.svelte";
