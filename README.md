@@ -1,5 +1,7 @@
 # Svelte UI components by @the-dissidents
 
+<img width="1168" height="716" alt="image" src="https://github.com/user-attachments/assets/aaabe42b-bc0f-42dd-8a60-ca72db9f2b18" />
+
 ## Features
 
 All controls are consistently styled using a set of configurable SASS parameters.
