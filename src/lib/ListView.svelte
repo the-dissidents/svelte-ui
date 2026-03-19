@@ -62,12 +62,11 @@
 	// });
 </script>
 
-<div class="list-view" role='listbox' style={style ?? ''}>
+<div class="list-view svelte-ui-listbox" role='listbox' style={style ?? ''}>
 	<div class="grid" style:grid-template-columns={gridTemplate}>
     <div class="row header" role='listitem'>
       {#each columns as [_, col]}
           <div class="header-cell"
-            class:ellipsis={col.ellipsis}
             style:text-align={col.align ?? 'start'}
           >
             {col.header}
@@ -173,7 +172,7 @@
 	}
 
 	.cell {
-		white-space: nowrap;
+		// white-space: nowrap;
 		align-self: center;
 	}
 

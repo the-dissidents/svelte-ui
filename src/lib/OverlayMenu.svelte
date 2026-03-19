@@ -89,57 +89,8 @@ const autofocus: Action<HTMLButtonElement, string> = (node, text) => {
 
 <style lang='scss'>
   @use 'uchu.scss';
+  @use 'dialog.scss' as *;
 
-  @media (prefers-color-scheme: light) {
-    dialog {
-      box-shadow: 0 0 10px gray;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    dialog {
-      box-shadow: 0 0 10px black;
-      background-color: uchu.$yin-9;
-      color: uchu.$yang;
-    }
-  }
-  dialog::backdrop {
-    background: rgba(0, 0, 0, 0.3);
-  }
-
-  dialog {
-    border-radius: 0.3em;
-    border: none;
-    margin: 0;
-    padding: 5px 15px;
-    z-index: 100;
-    max-height: 80vh;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    /* Use transform to offset the dialog by half its own width and height */
-    transform: translate(-50%, -50%);
-  }
-
-  dialog[open] {
-    animation: zoom 0.2s ease-out;
-  }
-  dialog[open]::backdrop {
-    animation: fade 0.2s ease-out;
-  }
-  @keyframes zoom {
-    from { transform: translate(-50%, -50%) scale(0.95); }
-    to { transform: translate(-50%, -50%) scale(1); }
-  }
-  @keyframes fade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  h4 {
-    margin: 10px 0 10px 0;
-  }
   div {
     list-style: none;
     padding: 0 0 10px 0;

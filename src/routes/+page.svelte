@@ -17,6 +17,7 @@
   import Banner from "$lib/Banner.svelte";
   import { overlayMenu } from "$lib/OverlayMenu.svelte";
   import ListView from "$lib/ListView.svelte";
+  import { showProgress } from "$lib/ProgressDialog.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -281,6 +282,15 @@
       </button>
       <button onclick={() => infoBanner = true}>
         show info banner
+      </button>
+      <button onclick={() => showProgress(async (a) => {
+        const max = 5000;
+        for (let i = 0; i < max; i++) {
+          a(i / max, `${i} / ${max}`);
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }, 'title')}>
+        show progress modal
       </button>
     </div>
   </div>

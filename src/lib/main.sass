@@ -11,7 +11,6 @@
   font-size: cfg(input-font-size)
   margin: 0
   padding: 0
-  overflow: hidden
   user-select: none
   -webkit-user-select: none
   -moz-user-select: none
@@ -139,8 +138,8 @@ label
 
 fieldset
   @extend %reset
+  font-size: cfg(text-font-size)
   border: none
-  padding: 0
 
 // #endregion
 
@@ -253,6 +252,7 @@ div.ProseMirror
   padding: 3px 5px
   margin: 0
   min-width: 5em
+  flex-shrink: 0
 
   text-align: start
   font-family: cfg(ui-font-family)
@@ -306,7 +306,7 @@ div.combobox
   @extend %combobox
 
   & [data-combobox-input]
-    @extend %box, %box-focus
+    @extend %box
 
     padding: 2px 5px 2px 5px
     flex-grow: 1
@@ -445,7 +445,7 @@ input[type=range]
 
 // #region List box
 
-*[role='listbox']
+ol[role='listbox'], .svelte-ui-listbox
   @extend %box
 
   display: flex
