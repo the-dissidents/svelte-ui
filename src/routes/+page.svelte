@@ -284,7 +284,7 @@
         show info banner
       </button>
       <button onclick={() => showProgress(async (a) => {
-        const max = 5000;
+        const max = 1000;
         for (let i = 0; i < max; i++) {
           a(i / max, `${i} / ${max}`);
           await new Promise((r) => setTimeout(r, 100));

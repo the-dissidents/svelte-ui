@@ -1,25 +1,27 @@
 <script lang="ts" module>
   import ProgressDialog from './ProgressDialog.svelte';
-  type ProgressAction = (report: (value: number, text?: string) => void) => Promise<void>;
+  type ProgressAction<T> = (report: (value: number, text?: string) => void) => Promise<T>;
 
-  export function showProgress(action: ProgressAction, header: string = ''): Promise<void> {
-    return new Promise<void>((resolve) => {
-        const menu = mount(ProgressDialog, {
+  export function showProgress<T>(action: ProgressAction<T>, header: string = ''): Promise<T> {
+    return new Promise<T>((resolve) => {
+        const menu = mount(ProgressDialog<T>, {
             target: document.body,
-            props: { header, action, async submit() {
+            props: { header, action, async submit(result) {
                 await unmount(menu);
-                resolve();
+                resolve(result);
             }, }
         });
     });
   }
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="T">
   import { mount, onMount, unmount } from "svelte";
   import { Debug } from "./Debug.js";
 
-  let { action, submit, header }: { action: ProgressAction, submit: () => void, header: string } = $props();
+  let { action, submit, header }: {
+    action: ProgressAction<T>, submit: (result: T) => void, header: string
+  } = $props();
   let dialog: HTMLDialogElement;
 
   let value: number = $state(0);
@@ -28,13 +30,22 @@
   onMount(async () => {
     Debug.assert(dialog !== undefined);
     dialog.showModal();
-    await action((v, t) => { value = v; text = t; });
+    const result = await action((v, t) => { value = v; text = t; });
     dialog.close();
-    submit();
+    submit(result);
   });
 </script>
 
-<dialog bind:this={dialog}>
+<dialog bind:this={dialog}
+  oncancel={(e) => e.preventDefault()}
+  onkeydown={(e) => {
+    // Chrome forces dialogs to close after ESC being hit twice; we need to manually disable this behavior here
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }}
+>
   {#if header}
   <h4>{header}</h4>
   {/if}
