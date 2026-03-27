@@ -1,6 +1,6 @@
 {
 	"name": "@the_dissidents/svelte-ui",
-	"version": "0.0.2",
+	"version": "0.0.4",
     "author": "the_dissidents",
     "license": "GPL-2.0-only",
 	"scripts": {
