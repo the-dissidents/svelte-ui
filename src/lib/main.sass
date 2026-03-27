@@ -7,8 +7,8 @@
 
 %reset
   text-decoration: none
-  font-family: cfg(ui-font-family)
-  font-size: cfg(input-font-size)
+  font-family: v(ui-font-family)
+  font-size: v(input-font-size)
   margin: 0
   padding: 0
   user-select: none
@@ -20,14 +20,14 @@
   box-shadow: none
 
   @include light()
-    color: cfg(disabled-text-light)
-    background-color: cfg(disabled-back-light)
+    color: v(disabled-text-light)
+    background-color: v(disabled-back-light)
   @include dark()
-    color: cfg(disabled-text-dark)
-    background-color: cfg(disabled-back-dark)
+    color: v(disabled-text-dark)
+    background-color: v(disabled-back-dark)
 
 :root
-  font-family: cfg(ui-font-family)
+  font-family: v(ui-font-family)
   line-height: 1.5rem
 
   text-rendering: optimizeLegibility
@@ -38,42 +38,42 @@
   scrollbar-color: gray transparent
 
   @include light()
-    color: cfg(text-light)
-    background-color: cfg(page-background-light)
+    color: v(text-light)
+    background-color: v(page-background-light)
 
   @include dark()
-    color: cfg(text-dark)
-    background-color: cfg(page-background-dark)
+    color: v(text-dark)
+    background-color: v(page-background-dark)
 
 %separator
   @include light()
-    border-bottom: cfge(1px solid, separator-light)
+    border-bottom: ve(1px solid, separator-light)
   @include dark()
-    border-bottom: cfge(1px solid, separator-dark)
+    border-bottom: ve(1px solid, separator-dark)
 
 %item-separator
   &:not(:last-child)
     @include light()
-      border-bottom: cfge(1px solid, separator-minor-light)
+      border-bottom: ve(1px solid, separator-minor-light)
     @include dark()
-      border-bottom: cfge(1px solid, separator-minor-dark)
+      border-bottom: ve(1px solid, separator-minor-dark)
 
 %box-focus
   &:focus,
   &:has(:focus)
     @include light()
-      border: cfge(1px solid, accent1-border-light)
-      outline: cfge(2px solid, accent1-back-light)
+      border: ve(1px solid, accent1-border-light)
+      outline: ve(2px solid, accent1-back-light)
     @include dark()
-      border: cfge(1px solid, accent1-border-dark)
-      outline: cfge(2px solid, accent1-back-dark)
+      border: ve(1px solid, accent1-border-dark)
+      outline: ve(2px solid, accent1-back-dark)
 
 %box
   @extend %reset
 
   appearance: none
 
-  border-radius: cfg(border-radius-small)
+  border-radius: v(border-radius-small)
   padding: 3px 5px
   margin: 1px
 
@@ -84,14 +84,14 @@
     @extend %disabled-colors
 
   @include light()
-    border: cfge(1px solid, box-border-light)
-    background-color: cfg(box-back-light)
-    color: cfg(text-light)
+    border: ve(1px solid, box-border-light)
+    background-color: v(box-back-light)
+    color: v(text-light)
 
   @include dark()
-    border: cfge(1px solid, box-border-dark)
-    background-color: cfg(box-back-dark)
-    color: cfg(text-dark)
+    border: ve(1px solid, box-border-dark)
+    background-color: v(box-back-dark)
+    color: v(text-dark)
 
 .lucide
   display: block
@@ -111,15 +111,15 @@ h5
 
   margin: 0 1px 3px 1px
   padding-top: 6px
-  font-size: cfg(text-font-size)
+  font-size: v(text-font-size)
   font-weight: bold
   text-transform: uppercase
   text-align: start
 
   @include light()
-    color: cfg(h5-text-light)
+    color: v(h5-text-light)
   @include dark()
-    color: cfg(h5-text-dark)
+    color: v(h5-text-dark)
 
 hr
   @extend %reset, %separator
@@ -133,12 +133,11 @@ input
 
 label
   @extend %reset
-  font-size: cfg(text-font-size)
   line-height: normal
 
 fieldset
   @extend %reset
-  font-size: cfg(text-font-size)
+  font-size: v(text-font-size)
   border: none
 
 // #endregion
@@ -151,19 +150,19 @@ fieldset
   &:focus,
   &:has(:focus)
     @include light()
-      outline: cfge(2px solid, accent1-back-light)
+      outline: ve(2px solid, accent1-back-light)
     @include dark()
-      outline: cfge(2px solid, accent1-back-dark)
+      outline: ve(2px solid, accent1-back-dark)
 
   @include light()
-    background-color: cfg(button-back-light)
-    color: cfg(text-light)
-    box-shadow: cfge(0 1px 3px, shadow-light)
+    background-color: v(button-back-light)
+    color: v(text-light)
+    box-shadow: ve(0 1px 3px, shadow-light)
 
   @include dark()
-    background-color: cfg(button-back-dark)
-    color: cfg(text-dark)
-    box-shadow: cfge(0 1px 3px, shadow-dark)
+    background-color: v(button-back-dark)
+    color: v(text-dark)
+    box-shadow: ve(0 1px 3px, shadow-dark)
 
 %button
   @extend %box, %button-colors
@@ -181,7 +180,7 @@ fieldset
       background-color: transparent
 
   &.left
-    border-radius: cfg(border-radius-large) 0 0 cfg(border-radius-large)
+    border-radius: v(border-radius-large) 0 0 v(border-radius-large)
     margin-right: 0
     text-align: right
   &.middle
@@ -190,7 +189,7 @@ fieldset
     margin-inline: 0
   &.right
     border-left: none
-    border-radius: 0 cfg(border-radius-large) cfg(border-radius-large) 0
+    border-radius: 0 v(border-radius-large) v(border-radius-large) 0
     margin-left: 0
     text-align: left
 
@@ -198,12 +197,12 @@ fieldset
   box-shadow: none
 
   @include light()
-    color: cfg(disabled-text-light)
-    background-color: cfg(button-disabled-light)
+    color: v(disabled-text-light)
+    background-color: v(button-disabled-light)
     filter: none
   @include dark()
-    color: cfg(disabled-text-dark)
-    background-color: cfg(button-disabled-dark)
+    color: v(disabled-text-dark)
+    background-color: v(button-disabled-dark)
     filter: none
 
 button:where(:not([data-select-trigger]))
@@ -238,13 +237,13 @@ div.ProseMirror
   overflow-y: scroll
 
   @include light()
-    border: cfge(1px solid, box-border-light)
-    background-color: cfg(box-back-light)
-    color: cfg(text-light)
+    border: ve(1px solid, box-border-light)
+    background-color: v(box-back-light)
+    color: v(text-light)
   @include dark()
-    border: cfge(1px solid, box-border-dark)
-    background-color: cfg(box-back-dark)
-    color: cfg(text-dark)
+    border: ve(1px solid, box-border-dark)
+    background-color: v(box-back-dark)
+    color: v(text-dark)
 
 %select-item
   border-radius: 0
@@ -255,8 +254,8 @@ div.ProseMirror
   flex-shrink: 0
 
   text-align: start
-  font-family: cfg(ui-font-family)
-  font-size: cfg(text-font-size)
+  font-family: v(ui-font-family)
+  font-size: v(text-font-size)
 
   box-shadow: none
 
@@ -353,17 +352,17 @@ div.combobox
     @extend %disabled-colors
 
   @include light()
-    border: cfge(1px solid, small-border-light)
-    background-color: cfg(box-back-light)
+    border: ve(1px solid, small-border-light)
+    background-color: v(box-back-light)
     &:not(:disabled):checked
-      border: cfge(1px solid, accent2-border-light)
-      background-color: cfg(accent2-back-light)
+      border: ve(1px solid, accent2-border-light)
+      background-color: v(accent2-back-light)
   @include dark()
-    border: cfge(1px solid, small-border-dark)
-    background-color: cfg(box-back-dark)
+    border: ve(1px solid, small-border-dark)
+    background-color: v(box-back-dark)
     &:not(:disabled):checked
-      border: cfge(1px solid, accent2-border-dark)
-      background-color: cfg(accent2-back-dark)
+      border: ve(1px solid, accent2-border-dark)
+      background-color: v(accent2-back-dark)
 
 input[type=radio]
   @extend %smallbox
@@ -404,9 +403,9 @@ label:has(input[type='checkbox'].button)
 
   &:has(:checked)
     @include light()
-      background-color: cfg(accent1-back-light)
+      background-color: v(accent1-back-light)
     @include dark()
-      background-color: cfg(accent1-back-dark)
+      background-color: v(accent1-back-dark)
 
 // #endregion
 
@@ -429,17 +428,17 @@ input[type=range]
     margin-top: math.div($track-height - $thumb-height, 2)
     height: $thumb-height
     width: 16px
-    border-radius: cfg(border-radius-small)
+    border-radius: v(border-radius-small)
 
   &::-webkit-slider-runnable-track
     width: 100%
     height: $track-height
-    border-radius: cfg(border-radius-large)
+    border-radius: v(border-radius-large)
 
     @include light()
-      background: cfg(slider-track-light)
+      background: v(slider-track-light)
     @include dark()
-      background: cfg(slider-track-dark)
+      background: v(slider-track-dark)
 
 // #endregion
 
@@ -459,8 +458,8 @@ ol[role='listbox'], .svelte-ui-listbox
   list-style: none
 
   & > li, [role='listitem']
-    font-family: cfg(ui-font-family)
-    font-size: cfg(text-font-size)
+    font-family: v(ui-font-family)
+    font-size: v(text-font-size)
     line-height: 1.3
     padding: 3px 6px
 

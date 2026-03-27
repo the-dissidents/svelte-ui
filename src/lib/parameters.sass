@@ -83,18 +83,14 @@ $cfg: (
   @at-root :root
     @each $key, $value in $cfg
       --#{$key}: #{$value}
+  @debug "svelte-ui: configure"
+  @debug meta.inspect(meta.keywords($args))
 
 @function v($name)
   @return var(--#{$name})
 
-@function cfg($name)
-  @return map.get($cfg, $name)
-
-@function cfge($expr, $var)
-  @if cfg($var) == none
-    @return none
-  @else
-    @return list.append($expr, cfg($var))
+@function ve($expr, $var)
+  @return list.append($expr, var(--#{$var}))
 
 @mixin light
   @media (prefers-color-scheme: light)
