@@ -4,6 +4,7 @@ interface Props {
   second?: HTMLElement | null;
   vertical?: boolean;
   reverse?: boolean;
+  useViewportFraction?: boolean;
   minValue?: number;
 }
 
@@ -12,27 +13,33 @@ let {
   second = $bindable(null),
   vertical = false,
   reverse = false,
+  useViewportFraction = false,
   minValue = 10,
 }: Props = $props();
 let cx = $state(0), cy = $state(0), orig = $state(0), orig2 = $state(0);
+
+function length(px: number) {
+  const v = vertical ? window.innerWidth : window.innerHeight;
+  return useViewportFraction ? `${px / v * 100}${vertical ? 'vw' : 'vh'}` : `${px}px`;
+}
 
 function ondrag(ev: MouseEvent) {
   let f = reverse ? -1 : 1;
   if (vertical) {
     let val = Math.max(orig + (ev.clientX - cx) * f, minValue);
-    if (second) second.style.width = (orig2 + val - orig) + 'px';
-    first.style.width = val + 'px';
+    if (second) second.style.width = length(orig2 + val - orig);
+    first.style.width = length(val);
   } else {
     let val = Math.max(orig + (ev.clientY - cy) * f, minValue);
-    if (second) second.style.height = (orig2 + val - orig) + 'px';
-    first.style.height = val + 'px';
+    if (second) second.style.height = length(orig2 + val - orig);
+    first.style.height = length(val);
   }
 }
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class={vertical ? 'resizerV' : 'resizerH'}
-  style='cursor: {vertical ? 'ew-resize' : 'ns-resize'}'
+  style:cursor={vertical ? 'ew-resize' : 'ns-resize'}
   onmousedown={(ev) => {
 	  cx = ev.clientX;
     cy = ev.clientY;
@@ -43,7 +50,7 @@ function ondrag(ev: MouseEvent) {
     document.addEventListener('mousemove', ondrag);
     document.addEventListener('mouseup', () => {
       document.removeEventListener('mousemove', ondrag);
-    }, {once: true});
+    }, { once: true });
   }}>
 <div class='inside'></div>
 </div>
