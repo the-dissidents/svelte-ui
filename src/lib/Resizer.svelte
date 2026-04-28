@@ -6,6 +6,8 @@ interface Props {
   reverse?: boolean;
   useViewportFraction?: boolean;
   minValue?: number;
+
+  value?: string;
 }
 
 let {
@@ -15,8 +17,18 @@ let {
   reverse = false,
   useViewportFraction = false,
   minValue = 10,
+  value = $bindable(undefined)
 }: Props = $props();
+
 let cx = $state(0), cy = $state(0), orig = $state(0), orig2 = $state(0);
+
+$effect(() => {
+  if (!value) return;
+  if (vertical)
+    first.style.width = value;
+  else
+    first.style.height = value;
+});
 
 function length(px: number) {
   const v = vertical ? window.innerWidth : window.innerHeight;
@@ -27,19 +39,20 @@ function ondrag(ev: MouseEvent) {
   let f = reverse ? -1 : 1;
   if (vertical) {
     let val = Math.max(orig + (ev.clientX - cx) * f, minValue);
-    if (second) second.style.width = length(orig2 + val - orig);
-    first.style.width = length(val);
+    if (second) second.style.width = length(orig2 - val + orig);
+    value = length(val);
+    // first.style.width = value;
   } else {
     let val = Math.max(orig + (ev.clientY - cy) * f, minValue);
-    if (second) second.style.height = length(orig2 + val - orig);
-    first.style.height = length(val);
+    if (second) second.style.height = length(orig2 - val + orig);
+    value = length(val);
+    // first.style.height = length(val);
   }
 }
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class={vertical ? 'resizerV' : 'resizerH'}
-  style:cursor={vertical ? 'ew-resize' : 'ns-resize'}
   onmousedown={(ev) => {
 	  cx = ev.clientX;
     cy = ev.clientY;
@@ -77,45 +90,47 @@ function ondrag(ev: MouseEvent) {
   }
 }
 
-.resizerH {
-  height: 6px;
-  width: 100%;
-  padding: 4px 0;
+div {
   user-select: none; -webkit-user-select: none;
   -moz-user-select: none; -ms-user-select: none;
 
   display: flex;
-  flex-direction: row;
   align-items: center;
 }
 
-.resizerH .inside {
+.resizerH {
+  height: 6px;
   width: 100%;
-  height: 1px;
-}
+  padding: 4px 0;
+  flex-direction: row;
+  cursor: row-resize;
 
-.resizerH:hover .inside {
-  height: 3px;
+  & .inside {
+    width: 100%;
+    height: 1px;
+    cursor: row-resize;
+  }
+
+  &:hover .inside {
+    height: 3px;
+  }
 }
 
 .resizerV {
   height: 100%;
   width: 6px;
   padding: 0 4px;
-  user-select: none; -webkit-user-select: none;
-  -moz-user-select: none; -ms-user-select: none;
-
-  display: flex;
   flex-direction: column;
-  align-items: center;
-}
+  cursor: col-resize;
 
-.resizerV .inside {
-  height: 100%;
-  width: 1px;
-}
+  & .inside {
+    height: 100%;
+    width: 1px;
+    cursor: col-resize;
+  }
 
-.resizerV:hover .inside {
-  width: 3px;
+  &:hover .inside {
+    width: 3px;
+  }
 }
 </style>

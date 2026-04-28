@@ -16,7 +16,14 @@ Styled native controls:
 
 Components:
 
-- `<TabView>` and `<TabPage>`
+- `<TabView>`
+  - `<TabPage>`
+- `<ConfigTable>`
+  - `<ConfigRow>`
+- `<ButtonStrip>`
+  - `<StripItem>` (button)
+  - `<StripRadioItem>`
+  - `<StripCheckbox>`
 - `<ListView>` (with configurable columns)
 - `<OrderableList>` (each row has a grab handle)
 - `<Colorpicker>` (uses the tree-shakable API of `colorjs.io`)

@@ -10,14 +10,20 @@
   import NumberInput from "$lib/NumberInput.svelte";
   import Tooltip, { type TooltipPosition } from "$lib/Tooltip.svelte";
   import OrderableList from "$lib/OrderableList.svelte";
-  import TabView from "$lib/TabView.svelte";
-  import TabPage from "$lib/TabPage.svelte";
+  import TabView from "$lib/TabView/TabView.svelte";
+  import TabPage from "$lib/TabView/TabPage.svelte";
   import Colorpicker from "$lib/Colorpicker.svelte";
   import Resizer from "$lib/Resizer.svelte";
   import Banner from "$lib/Banner.svelte";
   import { overlayMenu } from "$lib/OverlayMenu.svelte";
   import ListView from "$lib/ListView.svelte";
   import { showProgress } from "$lib/ProgressDialog.svelte";
+  import ButtonStrip from "$lib/ButtonStrip/ButtonStrip.svelte";
+  import StripItem from "$lib/ButtonStrip/StripItem.svelte";
+  import StripRadioItem from "$lib/ButtonStrip/StripRadioItem.svelte";
+  import StripCheckbox from "$lib/ButtonStrip/StripCheckbox.svelte";
+  import ConfigTable from "$lib/ConfigTable/ConfigTable.svelte";
+  import ConfigRow from "$lib/ConfigTable/ConfigRow.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -102,10 +108,33 @@
             <Collapsible header={`Number is ${value}`} active={true}
               showCheck={true} checked={true}
             >
-              <label>
-                Enter a number:
-                <NumberInput bind:value step="0.01"/>
-              </label>
+              <ConfigTable>
+                <ConfigRow name="first">
+                  <NumberInput bind:value step="0.01"/>
+                </ConfigRow>
+                <ConfigRow name="second">
+                  <button>hello</button>
+                </ConfigRow>
+              </ConfigTable>
+
+              <h5>ButtonStrip</h5>
+              <ButtonStrip>
+                <StripItem>copy</StripItem>
+                <StripItem>cut</StripItem>
+                <StripItem disabled>paste</StripItem>
+              </ButtonStrip>
+              <ButtonStrip selectValue="1">
+                <StripRadioItem value=0 disabled>disabled</StripRadioItem>
+                <StripRadioItem value=1>first</StripRadioItem>
+                <StripRadioItem value=2>second</StripRadioItem>
+                <StripRadioItem value=3>third</StripRadioItem>
+              </ButtonStrip>
+              <ButtonStrip selectValue="2">
+                <StripRadioItem value=1>mixed</StripRadioItem>
+                <StripRadioItem value=2>radios</StripRadioItem>
+                <StripCheckbox value={false}>and</StripCheckbox>
+                <StripCheckbox value={true}>checkboxes</StripCheckbox>
+              </ButtonStrip>
             </Collapsible>
 
             <Collapsible header="Styled native controls" active={true}>

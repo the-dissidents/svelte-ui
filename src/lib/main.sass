@@ -179,15 +179,15 @@ fieldset
     &:not(:disabled):not(:hover)
       background-color: transparent
 
-  &.left
+  &.left, %left
     border-radius: v(border-radius-large) 0 0 v(border-radius-large)
     margin-right: 0
     text-align: right
-  &.middle
+  &.middle, %middle
     border-left: none
     border-radius: 0
     margin-inline: 0
-  &.right
+  &.right, %right
     border-left: none
     border-radius: 0 v(border-radius-large) v(border-radius-large) 0
     margin-left: 0
@@ -390,12 +390,12 @@ input[type=checkbox]
   &:disabled:checked
     background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='10px' stroke='gray' fill='none' stroke-width='1.5px'><path d='M2 6 L5 8 L8 2'/></svg>")
 
-input[type=checkbox].button
+input.button:where([type='checkbox'], [type='radio'])
   display: none
   width: 0
   height: 0
 
-label:has(input[type='checkbox'].button)
+label:has(input:where([type='checkbox'], [type='radio']):where(.button))
   @extend %button
 
   &:has(:disabled)

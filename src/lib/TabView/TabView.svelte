@@ -82,7 +82,7 @@ setContext<TabAPI>(TabAPIContext, {
 </div>
 
 <style lang='scss'>
-  @use 'parameters.sass' as *;
+  @use '../parameters.sass' as *;
 
   .selected {
     border-bottom-width: 2px;
