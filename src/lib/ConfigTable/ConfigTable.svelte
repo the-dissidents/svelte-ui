@@ -9,8 +9,16 @@
   const { children }: Props = $props();
 </script>
 
-<table class="config">
-  <tbody>
-    {@render children()}
-  </tbody>
-</table>
+<form>
+  {@render children()}
+</form>
+
+<style lang="scss">
+  form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.2em 0.4em;
+    align-items: start;
+    margin: 0.2em;
+  }
+</style>

@@ -11,8 +11,8 @@ interface Props {
 }
 
 let {
-  first = $bindable(),
-  second = $bindable(null),
+  first,
+  second = null,
   vertical = false,
   reverse = false,
   useViewportFraction = false,
@@ -23,7 +23,7 @@ let {
 let cx = $state(0), cy = $state(0), orig = $state(0), orig2 = $state(0);
 
 $effect(() => {
-  if (!value) return;
+  if (!value || !first) return;
   if (vertical)
     first.style.width = value;
   else

@@ -10,26 +10,30 @@
   const { name, children }: Props = $props();
 </script>
 
-<tr>
-  <td class="name">
-    {#if typeof name === 'string'}
-      {name}
-    {:else}
-      {@render name()}
-    {/if}
-  </td>
-  <td>
-    {@render children()}
-  </td>
-</tr>
+<div class="name">
+  {#if typeof name === 'string'}
+    {name}
+  {:else}
+    {@render name()}
+  {/if}
+</div>
+<div class="value">
+  {@render children()}
+</div>
 
 <style lang="scss">
   @use '../parameters.sass' as *;
 
-  td.name {
+  .name {
+    grid-column: 1;
     font-size: v(text-font-size);
-    padding-right: 0.3em;
+    line-height: normal;
+    padding-top: 0.2em;
     text-align: end;
-    align-content: start;
+    align-content: v(config-label-alignment);
+  }
+
+  .value {
+    grid-column: 2;
   }
 </style>

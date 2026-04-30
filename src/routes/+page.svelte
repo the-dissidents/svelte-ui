@@ -115,6 +115,9 @@
                 <ConfigRow name="second">
                   <button>hello</button>
                 </ConfigRow>
+                <ConfigRow name="this is a really long item name">
+                  <textarea>textarea</textarea>
+                </ConfigRow>
               </ConfigTable>
 
               <h5>ButtonStrip</h5>

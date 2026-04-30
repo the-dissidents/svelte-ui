@@ -26,6 +26,9 @@ export default defineConfig(
         		"destructuredArrayIgnorePattern": "^_",
 				"varsIgnorePattern": "^_",
 			}],
+            "@typescript-eslint/no-unused-expressions": ["error", {
+                "allowShortCircuit": true
+            }],
 			"svelte/prefer-svelte-reactivity": 'off',
 			"svelte/require-each-key": 'off'
 		}
