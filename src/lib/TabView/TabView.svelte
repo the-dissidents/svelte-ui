@@ -128,7 +128,7 @@ setContext<TabAPI>(TabAPIContext, {
     border-radius: 0;
     box-shadow: none;
     margin: 0;
-    font-size: 90%;
+    font-size: v(label-font-size);
     text-wrap: nowrap;
   }
 </style>

@@ -26,7 +26,7 @@
 
   .name {
     grid-column: 1;
-    font-size: v(text-font-size);
+    font-size: v(label-font-size);
     line-height: normal;
     padding-top: 0.2em;
     text-align: end;
