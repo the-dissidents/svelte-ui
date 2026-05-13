@@ -35,6 +35,8 @@ Components:
 - `<Banner>`
 - An overlay menu with an imperative API: `await overlayMenu(...)`
 
+This library also injects a set of opinionated global styles including `box-sizing: border-box` and a `1.5rem` line height. For more details see `main.sass` in the source.
+
 ## Usage
 
 1. Install the library.
