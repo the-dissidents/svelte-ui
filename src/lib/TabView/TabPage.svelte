@@ -38,7 +38,7 @@ selection.subscribe((x) => { active = x === id; });
   });
 </script>
 
-<div class={['page', 'fill', {active}]}>
+<div class={['page', {active}]}>
   {#if !lazy || active}
     {@render children?.()}
   {/if}
