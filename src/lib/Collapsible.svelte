@@ -3,7 +3,7 @@ import type { Snippet } from "svelte";
 import Tooltip from "./Tooltip.svelte";
 
 interface Props {
-  header?: string;
+  header?: string | Snippet;
   helpText?: string;
   active?: boolean;
   showCheck?: boolean;
@@ -29,7 +29,15 @@ let {
   class:active class:checked
   onclick={() => { active = !active; onActiveChanged?.(active) }}
 >
-  <span class='caret flexgrow'>{header}</span>
+  {#if typeof header === 'string'}
+  <span class='caret flexgrow'>
+    {header}
+  </span>
+  {:else}
+  <span class='caret flexgrow'>
+    {@render header()}
+  </span>
+  {/if}
 
   {#if helpText != ""}
   <Tooltip position='left' text={helpText} />

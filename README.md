@@ -60,6 +60,7 @@ This library also injects a set of opinionated global styles including `box-sizi
       // $ui-font-family:   system-ui,
       // $mono-font-family: monospace,
       // $input-font-size:  0.8rem,
+      // $label-font-size:  0.8rem,
       // $text-font-size:   0.85rem,
 
       // $page-background-light:   #fafafa,
@@ -127,6 +128,8 @@ This library also injects a set of opinionated global styles including `box-sizi
 
       // $border-radius-large: 3px,
       // $border-radius-small: 2px,
+
+      // $config-label-alignment: end,
     );
     ```
 

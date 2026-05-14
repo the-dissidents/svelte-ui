@@ -105,9 +105,17 @@
               Common
             {/snippet}
 
-            <Collapsible header={`Number is ${value}`} active={true}
+            <Collapsible active={true}
               showCheck={true} checked={true}
             >
+              {#snippet header()}
+                <span class="hlayout">
+                  <span class="flexgrow">
+                    Custom header <span style="color:gray">(value=<code>{value}</code>)</span>
+                  </span>
+                  <span>right</span>
+                </span>
+              {/snippet}
               <ConfigTable>
                 <ConfigRow name="first">
                   <NumberInput bind:value step="0.01"/>
