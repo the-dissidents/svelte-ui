@@ -9,12 +9,12 @@
   const { children }: Props = $props();
 </script>
 
-<form>
+<div>
   {@render children()}
-</form>
+</div>
 
 <style lang="scss">
-  form {
+  div {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 0.2em 0.4em;
