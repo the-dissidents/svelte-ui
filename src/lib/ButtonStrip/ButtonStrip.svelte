@@ -16,13 +16,16 @@
 
 <script lang="ts" generics="T">
   import { getContext, setContext, type Snippet } from "svelte";
+  import type { SvelteHTMLElements } from "svelte/elements";
 
   interface Props {
     selectValue?: T,
     children: Snippet
   }
 
-  let { selectValue = $bindable(undefined), children }: Props = $props();
+  let {
+    selectValue = $bindable(undefined), children, ...rest
+  }: Props & SvelteHTMLElements['ul'] = $props();
 
   set({
     get target() { return selectValue; },
@@ -30,12 +33,15 @@
   });
 </script>
 
-<div>
+<ul {...rest}>
   {@render children()}
-</div>
+</ul>
 
 <style>
-  div {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: row;
   }

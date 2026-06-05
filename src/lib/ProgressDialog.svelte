@@ -4,13 +4,13 @@
 
   export function showProgress<T>(action: ProgressAction<T>, header: string = ''): Promise<T> {
     return new Promise<T>((resolve) => {
-        const menu = mount(ProgressDialog<T>, {
-            target: document.body,
-            props: { header, action, async submit(result) {
-                await unmount(menu);
-                resolve(result);
-            }, }
-        });
+      const menu = mount(ProgressDialog<T>, {
+        target: document.body,
+        props: { header, action, async submit(result) {
+          await unmount(menu);
+          resolve(result);
+        }, }
+      });
     });
   }
 </script>

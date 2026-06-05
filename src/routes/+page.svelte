@@ -24,6 +24,7 @@
   import StripCheckbox from "$lib/ButtonStrip/StripCheckbox.svelte";
   import ConfigTable from "$lib/ConfigTable/ConfigTable.svelte";
   import ConfigRow from "$lib/ConfigTable/ConfigRow.svelte";
+  import Popup from "$lib/Popup.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -56,6 +57,8 @@
 
   let errorBanner = $state(false);
   let infoBanner = $state(false);
+
+  let popup: Popup;
 </script>
 
 <style lang="scss" global>
@@ -271,6 +274,14 @@
             <Tooltip position={tooltipPos} text="content of tooltip">
               <button>tooltip</button>
             </Tooltip>
+
+            <button onclick={(ev) => popup.open(ev.currentTarget.getBoundingClientRect())}>
+              popup
+            </button>
+            <Popup bind:this={popup}>
+              <h5>Popup content</h5>
+              <button>content</button>
+            </Popup>
 
             <h5>Listbox</h5>
             <ol role="listbox" style="max-height: 250px;">

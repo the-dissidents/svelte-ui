@@ -12,6 +12,7 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
 interface Props extends HTMLAttributes<HTMLSpanElement> {
   kind?: 'panel' | 'tooltip';
+  offset?: number,
   maxWidth?: string;
   position?: TooltipPosition;
   onclose?: () => void;
@@ -20,7 +21,7 @@ interface Props extends HTMLAttributes<HTMLSpanElement> {
 
 let {
   position = 'top', kind = 'panel', maxWidth = '200px',
-  onclose, children, ...rest
+  offset = 5, onclose, children, ...rest
 }: Props = $props();
 
 let id = $props.id();
@@ -29,7 +30,6 @@ let isOpen = false;
 let tooltip: HTMLElement | undefined = $state();
 
 function computePosition(rect: DOMRect, pos: TooltipPosition): [number, number] {
-  const offset = 5;
   switch (pos) {
     case 'top':
       return [rect.left + rect.width  / 2, rect.top - offset];

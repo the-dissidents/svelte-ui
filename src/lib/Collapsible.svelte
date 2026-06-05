@@ -29,15 +29,16 @@ let {
   class:active class:checked
   onclick={() => { active = !active; onActiveChanged?.(active) }}
 >
-  {#if typeof header === 'string'}
-  <span class='caret flexgrow'>
-    {header}
+  <span class="hlayout flexgrow">
+    <span class="caret"></span>
+    <span class='flexgrow'>
+      {#if typeof header === 'string'}
+        {header}
+      {:else}
+        {@render header()}
+      {/if}
+    </span>
   </span>
-  {:else}
-  <span class='caret flexgrow'>
-    {@render header()}
-  </span>
-  {/if}
 
   {#if helpText != ""}
   <Tooltip position='left' text={helpText} />
