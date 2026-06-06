@@ -16,8 +16,8 @@
 <style lang="scss">
   div {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.2em 0.4em;
+    grid-template-columns: min-content auto 1fr;
+    gap: 0.2em 0.3em;
     align-items: start;
     margin: 0.2em;
   }

@@ -4,11 +4,18 @@
 
   interface Props extends HTMLTableAttributes {
     name: string | Snippet,
-    children: Snippet
+    checked?: boolean,
+    children: Snippet,
   }
 
-  const { name, children }: Props = $props();
+  let { name, children, checked }: Props = $props();
 </script>
+
+{#if checked !== undefined}
+  <div class="checked">
+    <input type='checkbox' bind:checked={checked} />
+  </div>
+{/if}
 
 <div class="name">
   {#if typeof name === 'string'}
@@ -24,8 +31,12 @@
 <style lang="scss">
   @use '../parameters.sass' as *;
 
-  .name {
+  .checked {
     grid-column: 1;
+  }
+
+  .name {
+    grid-column: 2;
     font-size: v(label-font-size);
     line-height: normal;
     padding-top: 0.2em;
@@ -34,6 +45,6 @@
   }
 
   .value {
-    grid-column: 2;
+    grid-column: 3;
   }
 </style>

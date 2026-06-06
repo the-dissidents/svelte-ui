@@ -120,13 +120,13 @@
                 </span>
               {/snippet}
               <ConfigTable>
-                <ConfigRow name="first">
+                <ConfigRow name="first" checked={true}>
                   <NumberInput bind:value step="0.01"/>
                 </ConfigRow>
                 <ConfigRow name="second">
                   <button>hello</button>
                 </ConfigRow>
-                <ConfigRow name="this is a really long item name">
+                <ConfigRow name="this is a really long item name" checked={true}>
                   <textarea>textarea</textarea>
                 </ConfigRow>
               </ConfigTable>
