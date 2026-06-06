@@ -6,14 +6,16 @@
     name: string | Snippet,
     checked?: boolean,
     children: Snippet,
+    onCheckedChanged?: (c: boolean) => void
   }
 
-  let { name, children, checked }: Props = $props();
+  let { name, children, checked = $bindable(), onCheckedChanged }: Props = $props();
 </script>
 
 {#if checked !== undefined}
   <div class="checked">
-    <input type='checkbox' bind:checked={checked} />
+    <input type='checkbox' bind:checked={checked}
+      onchange={(e) => onCheckedChanged?.(e.currentTarget.checked)} />
   </div>
 {/if}
 
