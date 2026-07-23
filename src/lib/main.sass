@@ -5,16 +5,18 @@
 
 // #region GERNERIC
 
+%noselect
+  user-select: none
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+
 %reset
   text-decoration: none
   font-family: v(ui-font-family)
   font-size: v(input-font-size)
   margin: 0
   padding: 0
-  user-select: none
-  -webkit-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
 
 %disabled-colors
   box-shadow: none
@@ -109,7 +111,7 @@
 // Miscellaneous
 
 h5
-  @extend %reset, %separator
+  @extend %reset, %separator, %noselect
 
   margin: 0 1px 3px 1px
   padding-top: 6px
@@ -124,7 +126,7 @@ h5
     color: v(h5-text-dark)
 
 hr
-  @extend %reset, %separator
+  @extend %reset, %separator, %noselect
 
   border-top: none
   border-left: none
@@ -134,11 +136,11 @@ input
   @extend %reset
 
 label
-  @extend %reset
+  @extend %reset, %noselect
   line-height: normal
 
 fieldset
-  @extend %reset
+  @extend %reset, %noselect
   font-size: v(label-font-size)
   border: none
 
@@ -167,7 +169,7 @@ fieldset
     box-shadow: ve(0 1px 3px, shadow-dark)
 
 %button
-  @extend %box, %button-colors
+  @extend %box, %button-colors, %noselect
   @include hover-indicator
 
   appearance: none
@@ -227,7 +229,7 @@ div.ProseMirror
 // #region Select
 
 %select
-  @extend %box, %box-focus
+  @extend %box, %box-focus, %noselect
 
 %select-trigger
   background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'><text x='0' y='10' fill='gray'>▾</text></svg>")
@@ -316,7 +318,7 @@ div.combobox
     outline: none
 
   & [data-combobox-trigger]
-    @extend %select-trigger
+    @extend %select-trigger, %noselect
     border: none
     box-shadow: none
 
@@ -367,7 +369,7 @@ div.combobox
       background-color: v(accent2-back-dark)
 
 input[type=radio]
-  @extend %smallbox
+  @extend %smallbox, %noselect
   border-radius: 99em
 
   &:checked
@@ -381,7 +383,7 @@ input[type=radio]
 // Checkbox
 
 input[type=checkbox]
-  @extend %smallbox
+  @extend %smallbox, %noselect
   border-radius: 2px
 
   &:checked
@@ -447,7 +449,7 @@ input[type=range]
 // #region List box
 
 ol[role='listbox'], .svelte-ui-listbox
-  @extend %box
+  @extend %box, %noselect
 
   display: flex
   flex-direction: column

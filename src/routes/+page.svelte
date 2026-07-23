@@ -25,6 +25,8 @@
   import ConfigTable from "$lib/ConfigTable/ConfigTable.svelte";
   import ConfigRow from "$lib/ConfigTable/ConfigRow.svelte";
   import Popup from "$lib/Popup.svelte";
+  import { showConfirmationPopup } from "$lib/ConfirmationPopup.svelte";
+  import { showInputPopup } from "$lib/InputPopup.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -250,6 +252,8 @@
             <h5>Colorpicker</h5>
             <Colorpicker color={Color.getColor('pink')}/>
 
+            <h5>Overlay menu</h5>
+
             <button onclick={() => {
               overlayMenu([
                 { text: 'first item' },
@@ -263,6 +267,8 @@
             }}>
               show overlay menu
             </button>
+
+            <h5>Popups</h5>
 
             <select bind:value={tooltipPos}>
               <option value="top">top</option>
@@ -282,6 +288,16 @@
               <h5>Popup content</h5>
               <button>content</button>
             </Popup>
+
+            <button onclick={(e) => showConfirmationPopup(e.currentTarget, 'prompt string')}>
+              confirmation
+            </button>
+
+            <button onclick={(e) => showInputPopup(e.currentTarget, 'must include the letter z', {
+              validate: (v) => v.includes('z')
+            })}>
+              input
+            </button>
 
             <h5>Listbox</h5>
             <ol role="listbox" style="max-height: 250px;">

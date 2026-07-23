@@ -23,5 +23,9 @@ export { default as ConfigRow } from "./ConfigTable/ConfigRow.svelte";
 
 export { overlayMenu } from "./OverlayMenu.svelte";
 export { showProgress } from "./ProgressDialog.svelte";
+export { showConfirmationPopup } from "./ConfirmationPopup.svelte";
+export { showInputPopup } from "./InputPopup.svelte";
+
+export { I18n } from "./I18n.svelte.ts";
 
 export * from "./EventHost.ts";
