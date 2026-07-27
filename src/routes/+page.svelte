@@ -351,13 +351,18 @@
         show info banner
       </button>
       <button onclick={() => showProgress(async (a) => {
-        const max = 1000;
+        const max = 100;
         for (let i = 0; i < max; i++) {
           a(i / max, `${i} / ${max}`);
           await new Promise((r) => setTimeout(r, 100));
         }
       }, 'title')}>
         show progress modal
+      </button>
+      <button onclick={() => showProgress(async () => {
+        await new Promise((r) => setTimeout(r, 2000));
+      }, 'title', null)}>
+        show progress modal (indeterminate)
       </button>
     </div>
   </div>

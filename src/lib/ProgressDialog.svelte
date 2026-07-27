@@ -1,12 +1,16 @@
 <script lang="ts" module>
   import ProgressDialog from './ProgressDialog.svelte';
-  type ProgressAction<T> = (report: (value: number, text?: string) => void) => Promise<T>;
+  type ProgressAction<T> = (report: (value: number | null, text?: string) => void) => Promise<T>;
 
-  export function showProgress<T>(action: ProgressAction<T>, header: string = ''): Promise<T> {
+  export function showProgress<T>(
+    action: ProgressAction<T>,
+    header: string = '',
+    value: number | null = 0
+  ): Promise<T> {
     return new Promise<T>((resolve) => {
       const menu = mount(ProgressDialog<T>, {
         target: document.body,
-        props: { header, action, async submit(result) {
+        props: { header, action, value, async submit(result) {
           await unmount(menu);
           resolve(result);
         }, }
@@ -19,12 +23,12 @@
   import { mount, onMount, unmount } from "svelte";
   import { Debug } from "./Debug.js";
 
-  let { action, submit, header }: {
-    action: ProgressAction<T>, submit: (result: T) => void, header: string
+  let { action, submit, header, value }: {
+    action: ProgressAction<T>, submit: (result: T) => void,
+    header: string, value: number | null
   } = $props();
   let dialog: HTMLDialogElement;
 
-  let value: number = $state(0);
   let text: string | undefined = $state();
 
   onMount(async () => {
