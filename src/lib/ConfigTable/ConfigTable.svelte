@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type { HTMLTableAttributes } from "svelte/elements";
+  import type { SvelteHTMLElements } from "svelte/elements";
 
-  interface Props extends HTMLTableAttributes {
+  interface Props {
     children: Snippet
   }
 
-  const { children }: Props = $props();
+  const { children, ...rest }: Props & SvelteHTMLElements['div'] = $props();
 </script>
 
-<div>
+<div {...rest}>
   {@render children()}
 </div>
 

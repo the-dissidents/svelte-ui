@@ -5,13 +5,19 @@ export type EventHandlerOptions = {
     once?: boolean;
 };
 
+const globalEventHosts: EventHost<unknown[]>[] = [];
+const globalAsyncEventHosts: AsyncEventHost<unknown[]>[] = [];
+
+export function unbindEvents(obj: object) {
+    EventHost.unbind(obj);
+    AsyncEventHost.unbind(obj);
+}
+
 export class EventHost<T extends unknown[] = []> {
     #listeners = new Map<object, [EventHandler<T>, EventHandlerOptions][]>();
 
-    static globalEventHosts: EventHost<unknown[]>[] = [];
     constructor() {
-        // @ts-expect-error -- converting to unknown
-        EventHost.globalEventHosts.push(this);
+        globalEventHosts.push(this as EventHost<[]>);
     }
 
     dispatch(...args: [...T]) {
@@ -32,8 +38,9 @@ export class EventHost<T extends unknown[] = []> {
         this.#listeners.get(obj)!.push([f, options]);
     }
 
+    /** @deprecated use `unbindEvents` instead */
     static unbind(obj: object) {
-        for (const host of EventHost.globalEventHosts) {
+        for (const host of globalEventHosts) {
             host.#listeners.delete(obj);
         }
     }
@@ -42,10 +49,8 @@ export class EventHost<T extends unknown[] = []> {
 export class AsyncEventHost<T extends unknown[] = []> {
     #listeners = new Map<object, [EventHandler<T>, EventHandlerOptions][]>();
 
-    static globalEventHosts: AsyncEventHost<unknown[]>[] = [];
     constructor() {
-        // @ts-expect-error -- converting to unknown
-        AsyncEventHost.globalEventHosts.push(this);
+        globalAsyncEventHosts.push(this as AsyncEventHost<[]>);
     }
 
     async dispatchAndAwaitAll(...args: [...T]) {
@@ -68,8 +73,9 @@ export class AsyncEventHost<T extends unknown[] = []> {
         this.#listeners.get(obj)!.push([f, options]);
     }
 
+    /** @deprecated use `unbindEvents` instead */
     static unbind(obj: object) {
-        for (const host of AsyncEventHost.globalEventHosts) {
+        for (const host of globalAsyncEventHosts) {
             host.#listeners.delete(obj);
         }
     }

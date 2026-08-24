@@ -1,15 +1,17 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import type { HTMLTableAttributes } from "svelte/elements";
+  import type { SvelteHTMLElements } from "svelte/elements";
 
-  interface Props extends HTMLTableAttributes {
+  interface Props {
     name: string | Snippet,
     checked?: boolean,
     children: Snippet,
     onCheckedChanged?: (c: boolean) => void
   }
 
-  let { name, children, checked = $bindable(), onCheckedChanged }: Props = $props();
+  let {
+    name, children, checked = $bindable(), onCheckedChanged, ...rest
+  }: Props & SvelteHTMLElements['div'] = $props();
 </script>
 
 {#if checked !== undefined}
@@ -26,7 +28,7 @@
     {@render name()}
   {/if}
 </div>
-<div class="value">
+<div class="value" {...rest}>
   {@render children()}
 </div>
 

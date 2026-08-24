@@ -15,21 +15,28 @@
 </script>
 
 <script lang="ts" generics="T">
+  import { Debug } from "$lib/Debug.js";
+
   import { getContext, setContext, type Snippet } from "svelte";
   import type { SvelteHTMLElements } from "svelte/elements";
 
   interface Props {
     selectValue?: T,
+    onValueChanged?: (x: T) => void,
     children: Snippet
   }
 
   let {
-    selectValue = $bindable(undefined), children, ...rest
+    selectValue = $bindable(undefined), children, onValueChanged, ...rest
   }: Props & SvelteHTMLElements['ul'] = $props();
 
   set({
     get target() { return selectValue; },
-    set target(x) { selectValue = x; },
+    set target(x) {
+      Debug.assert(x !== undefined);
+      selectValue = x;
+      onValueChanged?.(x);
+    },
   });
 </script>
 
