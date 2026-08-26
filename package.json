@@ -1,6 +1,6 @@
 {
 	"name": "@the_dissidents/svelte-ui",
-	"version": "0.0.18",
+	"version": "0.0.19",
 	"author": "the_dissidents",
 	"license": "GPL-2.0-only",
 	"scripts": {
@@ -34,6 +34,14 @@
 			"default": "./dist/main.sass"
 		},
 		"./uchu.scss": {
+			"sass": "./dist/uchu.scss",
+			"default": "./dist/uchu.scss"
+		},
+		"./main": {
+			"sass": "./dist/main.sass",
+			"default": "./dist/main.sass"
+		},
+		"./uchu": {
 			"sass": "./dist/uchu.scss",
 			"default": "./dist/uchu.scss"
 		}

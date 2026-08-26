@@ -1,8 +1,16 @@
 # Svelte UI components by @the-dissidents
 
-<img width="1168" height="716" alt="image" src="https://github.com/user-attachments/assets/aaabe42b-bc0f-42dd-8a60-ca72db9f2b18" />
+<p align="center">
+<img alt="image" src="https://img.shields.io/npm/v/%40the_dissidents%2Fsvelte-ui" />
+</p>
+
+<p align="center">
+<img alt="image" src="https://github.com/user-attachments/assets/aaabe42b-bc0f-42dd-8a60-ca72db9f2b18" />
+</p>
 
 ## Features
+
+> See the source for the [example page](./src/routes/+page.svelte) for details
 
 All controls are consistently styled using a set of configurable SASS parameters.
 
@@ -30,12 +38,50 @@ Components:
 - `<Resizer>`
 - `<Collapsible>`
 - `<NumberInput>` (a wrapper on `<input type=number>`)
-- `<Popup>` (generic base component)
-- `<Tooltip>` (a specialized `<Popup>`)
 - `<Banner>`
-- An overlay menu with an imperative API: `await overlayMenu(...)`
+
+- `<Popup>` (generic base component)
+- Specialized popups:
+  - `<Tooltip>`
+  - `<ConfirmationPopup>`
+  - `<InputPopup>`
 
 This library also injects a set of opinionated global styles including `box-sizing: border-box` and a `1.5rem` line height. For more details see `main.sass` in the source.
+
+## Advanced
+
+An overlay menu with an imperative API:
+
+```typescript
+export function overlayMenu(
+    items: {text: string, disabled?: boolean}[],
+    options: {title?: string, text?: string, rememberedItem?: string, emptyText?: string}
+): Promise<number> // returns selected index, or -1 if cancelled
+```
+
+A modal progress dialog:
+
+```typescript
+type ProgressAction<T> = (report: (value: number | null, text?: string) => void) => Promise<T>;
+
+export function showProgress<T>(
+    action: ProgressAction<T>,
+    header: string = '',
+    value: number | null = 0 // null is indeterminate
+): Promise<T>
+```
+
+A component and an attachment to display top/bottom shadows in containers when there's more to be scrolled:
+
+```svelte
+<ScrollShadows>
+    <your-container {@attach scrollShadows}>
+    ...
+    </your-container>
+</ScrollShadows>
+```
+
+The outer component is for positioning the shadows pseudo-elements. In general you should use only one element (the container) inside, which you should attach `scrollShadows` to.
 
 ## Usage
 
@@ -48,13 +94,11 @@ This library also injects a set of opinionated global styles including `box-sizi
 2. Configure the main stylesheet. You must enable preprocessing of SASS/SCSS files, and you need to `@use` the main stylesheet in somewhere that has global scope (e.g. in a `<style lang='scss' global>` block or in a stylesheet `import`ed in your entrance point's JS/TS script):
 
     ```scss
-    // The author cannot find a reliable method to resolve package paths in
-    // SASS/SCSS except specifying the whole relative path to it in node_modules
-    @use "../node_modules/@the_dissidents/svelte-ui/dist/main";
+    @use "@the_dissidents/svelte-ui/main";
 
     // Uncomment this line to access the uchu palette which is used in the
     // default values:
-    // @use "../node_modules/@the_dissidents/svelte-ui/dist/uchu";
+    // @use "@the_dissidents/svelte-ui/uchu";
 
     @include main.configure(
       // $ui-font-family:   system-ui,

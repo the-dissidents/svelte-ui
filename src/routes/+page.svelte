@@ -27,6 +27,7 @@
   import Popup from "$lib/Popup.svelte";
   import { showConfirmationPopup } from "$lib/ConfirmationPopup.svelte";
   import { showInputPopup } from "$lib/InputPopup.svelte";
+  import ScrollShadows, { scrollShadows } from "$lib/ScrollShadows.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -51,7 +52,7 @@
     });
 
   const list = $state<{text: string}[]>([]);
-  for (let i = 0; i < 10; i++)
+  for (let i = 0; i < 20; i++)
     list.push({text: randomString(Math.random() * 10 + 5)});
 
   let leftPane = $state<HTMLElement>();
@@ -241,7 +242,6 @@
                 Underline
               </label>
             </Collapsible>
-
           </TabPage>
 
           <TabPage id="2">
@@ -305,6 +305,19 @@
                 <li>{text}</li>
               {/each}
             </ol>
+          </TabPage>
+
+          <TabPage id="3">
+            {#snippet header()}
+              Scrolling shadows
+            {/snippet}
+            <ScrollShadows>
+              <ol role="listbox" style="max-height: 250px;" {@attach scrollShadows}>
+                {#each list as {text}}
+                  <li>{text} with shadows</li>
+                {/each}
+              </ol>
+            </ScrollShadows>
           </TabPage>
         </TabView>
       </div>
