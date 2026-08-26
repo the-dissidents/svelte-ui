@@ -59,6 +59,8 @@
 </div>
 
 <style lang="scss">
+  @use 'parameters.sass' as *;
+
 	.scroll-shadows-wrapper {
 		position: relative;
 		overflow: hidden;
@@ -74,17 +76,19 @@
       opacity: 0;
       transition: opacity 300ms;
     }
+
+    @include colorvars(--scroll-shadow-color, shadow);
 	}
 
   [data-scroll-top]::before {
-    opacity: 1;
     top: 0;
-    background: linear-gradient(to bottom, rgb(0 0 0 / 15%), transparent);
+    opacity: 0.5;
+    background: linear-gradient(to bottom, var(--scroll-shadow-color), transparent);
   }
 
   [data-scroll-bottom]::after {
     bottom: 0;
-    opacity: 1;
-    background: linear-gradient(to top, rgb(0 0 0 / 15%), transparent);
+    opacity: 0.5;
+    background: linear-gradient(to top, var(--scroll-shadow-color), transparent);
   }
 </style>

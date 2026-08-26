@@ -63,7 +63,7 @@ $cfg: (
   separator-minor-dark:  uchu.$yin-7,
 
   shadow-light:  rgba(128, 128, 128, 0.5),
-  shadow-dark:   rgba(128, 128, 128, 0.5),
+  shadow-dark:   rgba(25, 5, 15, 0.5),
 
   tab-accent-light: uchu.$blue-4,
   tab-accent-dark:  slategray,
@@ -109,3 +109,15 @@ $cfg: (
       filter: brightness(97%)
     @include dark()
       filter: brightness(110%)
+
+@mixin colorvars($prop, $prefix)
+  #{$prop}: var(--#{$prefix}-light)
+
+  @media (prefers-color-scheme: dark)
+    #{$prop}: var(--#{$prefix}-dark)
+
+@mixin colors($prop, $light, $dark)
+  #{$prop}: $light
+
+  @media (prefers-color-scheme: dark)
+    #{$prop}: $dark

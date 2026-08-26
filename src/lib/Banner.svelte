@@ -102,21 +102,8 @@ $effect(() => {
 </dialog>
 
 <style lang='scss'>
+@use "./parameters.sass" as *;
 @use 'uchu.scss';
-
-@media (prefers-color-scheme: light) {
-  dialog {
-    box-shadow: 2px 4px 10px gray;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  dialog {
-    box-shadow: 2px 4px 10px black;
-    background-color: uchu.$yin-6;
-    color: uchu.$yang;
-  }
-}
 
 dialog {
   position: absolute;
@@ -130,6 +117,15 @@ dialog {
     bottom 0.1s ease-in,
     display 0.5s allow-discrete,
     overlay 0.5s allow-discrete;
+
+  @include light {
+    box-shadow: 2px 4px 10px gray;
+  }
+  @include dark {
+    box-shadow: 2px 4px 10px black;
+    background-color: uchu.$yin-6;
+    color: uchu.$yang;
+  }
 }
 
 p {
