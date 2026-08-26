@@ -9,6 +9,7 @@ export { default as Popup, type PopupOpen } from "./Popup.svelte";
 export { default as Resizer } from "./Resizer.svelte";
 export { default as Tooltip, type TooltipPosition } from "./Tooltip.svelte";
 export { default as ListView } from "./ListView.svelte";
+export { default as ScrollShadows, scrollShadows } from "./ScrollShadows.svelte";
 
 export { default as TabView } from "./TabView/TabView.svelte";
 export { default as TabPage } from "./TabView/TabPage.svelte";
