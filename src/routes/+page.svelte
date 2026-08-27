@@ -60,6 +60,7 @@
 
   let errorBanner = $state(false);
   let infoBanner = $state(false);
+  let disableStrips = $state(false);
 
   let popup: Popup;
 </script>
@@ -129,29 +130,35 @@
                 <ConfigRow name="second">
                   <button>hello</button>
                 </ConfigRow>
-                <ConfigRow name="this is a really long item name" checked={true}>
+                <ConfigRow name="this is a really long item name">
                   <textarea>textarea</textarea>
                 </ConfigRow>
               </ConfigTable>
 
               <h5>ButtonStrip</h5>
-              <ButtonStrip>
-                <StripItem>copy</StripItem>
-                <StripItem>cut</StripItem>
-                <StripItem disabled>paste</StripItem>
-              </ButtonStrip>
-              <ButtonStrip selectValue="1">
-                <StripRadioItem value=0 disabled>disabled</StripRadioItem>
-                <StripRadioItem value=1>first</StripRadioItem>
-                <StripRadioItem value=2>second</StripRadioItem>
-                <StripRadioItem value=3>third</StripRadioItem>
-              </ButtonStrip>
-              <ButtonStrip selectValue="2">
-                <StripRadioItem value=1>mixed</StripRadioItem>
-                <StripRadioItem value=2>radios</StripRadioItem>
-                <StripCheckbox value={false}>and</StripCheckbox>
-                <StripCheckbox value={true}>checkboxes</StripCheckbox>
-              </ButtonStrip>
+              <div style="display: flex; flex-direction: column; gap: 5px">
+                <label>
+                  <input type='checkbox' bind:checked={disableStrips}>
+                  disable button strips
+                </label>
+                <ButtonStrip disabled={disableStrips}>
+                  <StripItem>copy</StripItem>
+                  <StripItem>cut</StripItem>
+                  <StripItem disabled>paste</StripItem>
+                </ButtonStrip>
+                <ButtonStrip selectValue="1" disabled={disableStrips}>
+                  <StripRadioItem value=0 disabled>disabled</StripRadioItem>
+                  <StripRadioItem value=1>first</StripRadioItem>
+                  <StripRadioItem value=2>second</StripRadioItem>
+                  <StripRadioItem value=3>third</StripRadioItem>
+                </ButtonStrip>
+                <ButtonStrip selectValue="2" disabled={disableStrips}>
+                  <StripRadioItem value=1>mixed</StripRadioItem>
+                  <StripRadioItem value=2>radios</StripRadioItem>
+                  <StripCheckbox value={false}>and</StripCheckbox>
+                  <StripCheckbox value={true}>checkboxes</StripCheckbox>
+                </ButtonStrip>
+              </div>
             </Collapsible>
 
             <Collapsible header="Styled native controls" active={true}>

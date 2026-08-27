@@ -1,7 +1,7 @@
 <script lang="ts" generics="T">
   import { type Snippet } from "svelte";
   import type { HTMLLabelAttributes } from "svelte/elements";
-  import { getButtonStripContext } from "./ButtonStrip.svelte";
+  import { childPosition, getButtonStripContext } from "./ButtonStrip.svelte";
   import { Debug } from "$lib/Debug.js";
 
   interface Props extends HTMLLabelAttributes {
@@ -14,31 +14,19 @@
 
   const cxt = getButtonStripContext<T>();
   Debug.assert(!!cxt);
+
+  let elem = $state<HTMLElement>();
+  let position = $derived(childPosition(elem, cxt.container));
 </script>
 
-<label {...rest}>
+<label {...rest} bind:this={elem} data-strip-item
+  class:first={position == 'first'}
+  class:last={position == 'last'}
+>
   {@render children()}
 
-  <input type='radio' class="button" {disabled}
+  <input type='checkbox' class="button"
+    disabled={disabled || cxt.disabled}
     checked={cxt.target === value}
     onchange={() => cxt.target = value}>
 </label>
-
-<style lang="scss">
-  @use '../parameters.sass' as *;
-
-  label {
-    flex-grow: 1;
-    border-radius: 0;
-    margin-inline: 0;
-
-    &:first-child {
-      border-radius: v(border-radius-large) 0 0 v(border-radius-large);
-      margin-right: 0;
-    }
-    &:last-child {
-      border-radius: 0 v(border-radius-large) v(border-radius-large) 0;
-      margin-left: 0;
-    }
-  }
-</style>
