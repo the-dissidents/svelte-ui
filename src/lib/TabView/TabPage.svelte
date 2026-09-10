@@ -1,45 +1,57 @@
+<!--
+  @component
+  If you want to dynamically include `<TabPage>`s in a `{#each}` block, make sure you key it using the tabs' `id`, or unexpected behavior may arise for unknown reasons.
+
+  ```tsx
+  {#each customTabs as [id, tab] (id)}
+    <TabPage {id} header={id}
+      onCloseRequested={() => customTabs.delete(id)}
+    > ... </TabPage>
+  {/each}
+  ```
+-->
 <script lang="ts">
-import { getContext, untrack, type Snippet } from "svelte";
-import { TabAPIContext, type TabAPI, type TabPageData } from "./TabView.svelte";
+import { getContext, type Snippet } from "svelte";
+import { TabAPIContext, type TabAPI } from "./TabView.svelte";
 
 interface Props {
+  /** do not modify */
   id: string;
   header: Snippet | string;
+  alignment?: 'start' | 'end';
   lazy?: boolean;
-  active?: boolean;
+
+  onCloseRequested?: () => void;
   onActivate?: () => void;
   children?: Snippet;
 }
 
 let {
   id, header, children, lazy,
-  active = $bindable(false),
-  onActivate
+  alignment = 'start',
+  onActivate,
+  onCloseRequested,
 }: Props = $props();
 
 const tabApi: TabAPI = getContext(TabAPIContext);
 
-const page: TabPageData = {
+tabApi.registerPage({
   id,
-  header: () => header
-};
+  alignment: () => alignment,
+  header: () => header,
+  closeRequested: () => onCloseRequested
+});
 
-tabApi.registerPage(page);
-const selection = tabApi.selected();
-selection.subscribe((x) => { active = x === id; });
-
-  $effect(() => {
-    if (active) {
-      untrack(() => {
-        selection.set(id);
-        onActivate?.();
-      });
-    }
-  });
+$effect(() => {
+  if (tabApi.selected === id) {
+    console.log('activate:', id);
+    onActivate?.();
+  }
+});
 </script>
 
-<div class={['page', {active}]}>
-  {#if !lazy || active}
+<div class='page' class:active={tabApi.selected === id}>
+  {#if !lazy || tabApi.selected === id}
     {@render children?.()}
   {/if}
 </div>

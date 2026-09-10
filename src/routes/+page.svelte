@@ -28,6 +28,7 @@
   import { showConfirmationPopup } from "$lib/ConfirmationPopup.svelte";
   import { showInputPopup } from "$lib/InputPopup.svelte";
   import ScrollShadows, { scrollShadows } from "$lib/ScrollShadows.svelte";
+  import { SvelteMap } from "svelte/reactivity";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -63,6 +64,9 @@
   let disableStrips = $state(false);
 
   let popup: Popup;
+
+  let customTabs = new SvelteMap<string, { alignment: 'start' | 'end' }>();
+  let counter = 0;
 </script>
 
 <style lang="scss" global>
@@ -251,7 +255,20 @@
             </Collapsible>
           </TabPage>
 
-          <TabPage id="2">
+          <TabPage id="3">
+            {#snippet header()}
+              Scrolling shadows
+            {/snippet}
+            <ScrollShadows>
+              <ol role="listbox" style="max-height: 250px;" {@attach scrollShadows}>
+                {#each list as {text}}
+                  <li>{text} with shadows</li>
+                {/each}
+              </ol>
+            </ScrollShadows>
+          </TabPage>
+
+          <TabPage id="2" alignment='end'>
             {#snippet header()}
               Advanced
             {/snippet}
@@ -314,18 +331,13 @@
             </ol>
           </TabPage>
 
-          <TabPage id="3">
-            {#snippet header()}
-              Scrolling shadows
-            {/snippet}
-            <ScrollShadows>
-              <ol role="listbox" style="max-height: 250px;" {@attach scrollShadows}>
-                {#each list as {text}}
-                  <li>{text} with shadows</li>
-                {/each}
-              </ol>
-            </ScrollShadows>
-          </TabPage>
+          {#each customTabs as [id, tab] (id)}
+            <TabPage {id} header={id} alignment={tab.alignment}
+              onCloseRequested={() => customTabs.delete(id)}
+            >
+              custom tab {id}
+            </TabPage>
+          {/each}
         </TabView>
       </div>
       <Resizer first={leftPane} vertical={true}/>
@@ -384,6 +396,14 @@
       }, 'title', null)}>
         show progress modal (indeterminate)
       </button>
+      <button onclick={() => {
+        customTabs.set('custom' + counter.toString(), { alignment: 'start' });
+        counter++;
+      }}>add custom tab on left</button>
+      <button onclick={() => {
+        customTabs.set('custom' + counter.toString(), { alignment: 'end' });
+        counter++;
+      }}>add custom tab on right</button>
     </div>
   </div>
 </main>
