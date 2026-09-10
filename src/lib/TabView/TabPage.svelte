@@ -15,9 +15,10 @@ import { getContext, type Snippet } from "svelte";
 import { TabAPIContext, type TabAPI } from "./TabView.svelte";
 
 interface Props {
-  /** do not modify */
+  /** do not modify once initialized */
   id: string;
   header: Snippet | string;
+  reorderable?: boolean;
   alignment?: 'start' | 'end';
   lazy?: boolean;
 
@@ -28,6 +29,7 @@ interface Props {
 
 let {
   id, header, children, lazy,
+  reorderable = false,
   alignment = 'start',
   onActivate,
   onCloseRequested,
@@ -38,23 +40,27 @@ const tabApi: TabAPI = getContext(TabAPIContext);
 tabApi.registerPage({
   id,
   alignment: () => alignment,
+  reorderable: () => reorderable,
   header: () => header,
-  closeRequested: () => onCloseRequested
+  closeRequested: () => onCloseRequested,
+  content: () => page
 });
 
 $effect(() => {
-  if (tabApi.selected === id) {
-    console.log('activate:', id);
+  if (tabApi.selectedId === id) {
+    // console.log('activate:', id);
     onActivate?.();
   }
 });
 </script>
 
-<div class='page' class:active={tabApi.selected === id}>
-  {#if !lazy || tabApi.selected === id}
+{#snippet page()}
+<div class='page' class:active={tabApi.selectedId === id}>
+  {#if !lazy || tabApi.selectedId === id}
     {@render children?.()}
   {/if}
 </div>
+{/snippet}
 
 <style>
 .page {

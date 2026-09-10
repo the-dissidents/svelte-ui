@@ -333,6 +333,7 @@
 
           {#each customTabs as [id, tab] (id)}
             <TabPage {id} header={id} alignment={tab.alignment}
+              reorderable={true}
               onCloseRequested={() => customTabs.delete(id)}
             >
               custom tab {id}

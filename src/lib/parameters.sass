@@ -86,8 +86,8 @@ $cfg: (
   @at-root :root
     @each $key, $value in $cfg
       --#{$key}: #{$value}
-  @debug "svelte-ui: configure"
-  @debug meta.inspect(meta.keywords($args))
+  // @debug "svelte-ui: configure"
+  // @debug meta.inspect(meta.keywords($args))
 
 @function v($name)
   @return var(--#{$name})

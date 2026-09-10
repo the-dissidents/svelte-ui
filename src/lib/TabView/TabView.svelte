@@ -3,22 +3,25 @@
 export type TabAPIType = {};
 export type TabPageData = {
   readonly id: string,
+  readonly reorderable: () => boolean,
   readonly header: () => Snippet | string,
   readonly alignment: () => 'start' | 'end',
   readonly closeRequested: () => (() => void) | undefined,
+  readonly content: () => Snippet,
+
+  dom?: HTMLElement
 };
 export const TabAPIContext: TabAPIType = {};
 
 export type TabAPI = {
   registerPage(data: TabPageData): void,
-  selected: string | undefined
+  selectedId: string | undefined
 };
 </script>
 
 <script lang="ts">
 import { onMount, setContext, type Snippet } from "svelte";
 import { XIcon } from "@lucide/svelte";
-import { SvelteMap } from "svelte/reactivity";
 import { Debug } from "$lib/Debug.js";
 
 interface Props {
@@ -28,61 +31,131 @@ interface Props {
 
 let { children, current = $bindable() }: Props = $props();
 let history: string[] = [];
-let pages = new SvelteMap<string, TabPageData>();
+let pages = $state<TabPageData[]>([]);
+let dragTarget = $state<{ id: string, side: 'before' | 'after' }>();
 
 setContext<TabAPI>(TabAPIContext, {
   registerPage(data) {
     onMount(() => {
       const id = data.id;
-      if (pages.has(id)) {
+      if (getPage(id)) {
         throw new Error(`duplicate tab id: ${id}`);
       }
       console.log('adding tab', id);
-      pages.set(id, data);
+      pages.push(data);
       if (!current) current = id;
 
       return () => {
         console.log('removing tab', id);
-        Debug.assert(pages.has(id));
-        pages.delete(id);
+        const index = pages.findIndex((x) => x.id == id);
+        Debug.assert(index >= 0);
+        pages.splice(index, 1);
       }
     });
   },
-  get selected() {
+  get selectedId() {
     return current;
   },
-  set selected(x) {
+  set selectedId(x) {
     current = x;
   }
 });
 
-$effect(() => {
-  pages.has(current!);
+function getPage(id?: string) {
+  return id ? pages.find((x) => x.id === id) : undefined;
+}
 
+// undefined beforeId means moving to the last
+function movePage(id: string, targetId: string, side: 'before' | 'after') {
+  if (id == targetId) return;
+
+  console.log('moving page', id, side, targetId);
+
+  const i = pages.findIndex((x) => x.id === id);
+  Debug.assert(i >= 0);
+  const [data] = pages.splice(i, 1);
+
+  const j = pages.findIndex((x) => x.id === targetId);
+  Debug.assert(j >= 0);
+  pages.splice(side == 'after' ? j + 1 : j, 0, data);
+}
+
+function handleDrag(data: TabPageData, eOrig: MouseEvent) {
+  current = data.id;
+  if (!data.reorderable()) return;
+
+  let started = false;
+  const move = (e: MouseEvent) => {
+    if (!started) {
+      if (Math.abs(eOrig.clientX - e.clientX) > 2
+       || Math.abs(eOrig.clientY - e.clientY) > 2
+      ) started = true;
+      else return;
+    }
+
+    let best = Infinity;
+    dragTarget = undefined;
+    for (const { id, dom, alignment, reorderable } of pages) {
+      if (alignment() !== data.alignment() || !reorderable()) continue;
+
+      const rect = dom?.getBoundingClientRect();
+      if (!rect || e.clientY < rect.top || e.clientY > rect.bottom) continue;
+      const middleX = rect.left + rect.width / 2;
+
+      if (e.clientX < middleX) {
+        const dist = middleX - e.clientX;
+        if (dist < best) {
+          best = dist;
+          dragTarget = { id, side: 'before' };
+        }
+      } else {
+        const dist = e.clientX - middleX;
+        if (dist < best) {
+          best = dist;
+          dragTarget = { id, side: 'after' };
+        }
+      }
+    }
+  };
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', move);
+    if (!dragTarget) return;
+    movePage(data.id, dragTarget.id, dragTarget.side);
+    dragTarget = undefined;
+  }, {once: true});
+}
+
+$effect(() => {
+  const page = getPage(current);
   console.log('current=', current);
-  if (current && !pages.has(current)) {
+  if (!page) {
     let previous: string | undefined;
     while ((previous = history.pop()))
-      if (pages.has(previous)) break;
+      if (getPage(previous)) break;
     current = previous;
     console.log('current set to', current);
     return;
   }
   if (current && current !== history.at(-1))
     history.push(current);
-})
+});
 </script>
 
-{#snippet page(id: string, data: TabPageData)}
-  {@const selected = current === id}
+{#snippet pageHeader(data: TabPageData)}
+  {@const selected = current === data.id}
   {@const header = data.header()}
   {@const close = data.closeRequested()}
 
-  <div class='tab' class:selected>
+  <div class='tab' class:selected
+    class:hasclose={close}
+    class:dragbefore={dragTarget?.id === data.id && dragTarget.side == 'before'}
+    class:dragafter={dragTarget?.id === data.id && dragTarget.side == 'after'}
+    bind:this={data.dom}
+  >
     <button
-      role='tab'
-      class='tabbutton'
-      onclick={() => current = id}
+      role='tab' class='tabbutton'
+      onmousedown={(e) => handleDrag(data, e)}
     >
       {#if typeof header == 'string'}
         {header}
@@ -91,21 +164,20 @@ $effect(() => {
       {/if}
     </button>
 
-    {#if close && selected}
-      <button class="close" disabled={!selected} onclick={() => close?.()}>
+    {#if close}
+      <button class="close" onclick={() => close?.()}>
         <XIcon />
       </button>
     {/if}
   </div>
-
 {/snippet}
 
 <div class='tabview vlayout'>
   <div class='header'>
     <div class="left">
-      {#each pages as [id, data]}
+      {#each pages as data (data.id)}
       {#if data.alignment() == 'start'}
-        {@render page(id, data)}
+        {@render pageHeader(data)}
       {/if}
       {/each}
     </div>
@@ -113,15 +185,21 @@ $effect(() => {
     <div class="spacer"></div>
 
     <div class="right">
-      {#each pages as [id, data]}
+      {#each pages as data (data.id)}
       {#if data.alignment() == 'end'}
-        {@render page(id, data)}
+        {@render pageHeader(data)}
       {/if}
       {/each}
     </div>
   </div>
 
-  {@render children()}
+  <div hidden>
+    {@render children()}
+  </div>
+
+  {#each pages as data (data.id)}
+    {@render data.content()()}
+  {/each}
 </div>
 
 <style lang='scss'>
@@ -141,12 +219,19 @@ $effect(() => {
     display: inline-flex;
     flex-direction: row;
     justify-items: stretch;
-    border-bottom: 1px solid transparent;
 
-    &:not(.selected) {
+    border: 1px solid transparent;
+    &.dragbefore {
+      border-left: 1px solid black;
+    }
+    &.dragafter {
+      border-right: 1px solid black;
+    }
+
+    &:not(.selected) .tabbutton {
       filter: contrast(10%) !important;
     }
-    &:not(.selected):hover {
+    &:not(.selected):hover .tabbutton {
       filter: contrast(50%) !important;
     }
 
@@ -167,25 +252,23 @@ $effect(() => {
       width: 100%;
     }
 
-    &:has(.close) .tabbutton {
-      padding-right: 1.5em;
-    }
-
-    .close {
-      position: absolute;
-      right: 0;
-      bottom: 0.2em;
-      top: 0.2em;
-      padding: 0;
-      aspect-ratio: 1;
-      :global(.lucide) {
-        height: 1em;
+    &.hasclose {
+      .tabbutton {
+        padding-inline: 0.2em 1.3em;
       }
-    }
-
-    &.selected .close {
-      &:hover {
-        background: lightblue;
+      .close {
+        position: absolute;
+        padding: 0;
+        aspect-ratio: 1;
+        right: 0;
+        bottom: 0.25em;
+        top: 0.25em;
+        :global(.lucide) {
+          height: 1em;
+        }
+        &:hover {
+          background: #eee;
+        }
       }
     }
   }
@@ -202,7 +285,7 @@ $effect(() => {
   .header, .left, .right {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: wrap-reverse;
     align-items: end;
   }
 
