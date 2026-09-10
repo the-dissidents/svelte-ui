@@ -219,14 +219,35 @@ $effect(() => {
     display: inline-flex;
     flex-direction: row;
     justify-items: stretch;
-
     border: 1px solid transparent;
-    &.dragbefore {
-      border-left: 1px solid black;
+
+    &.dragbefore::before,
+    &.dragafter::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 1px;
+      pointer-events: none;
+      z-index: 1;
+      @include colors(background, v(tab-accent-light), v(tab-accent-dark));
     }
-    &.dragafter {
-      border-right: 1px solid black;
+    &.dragbefore::before { left: -1.5px; }
+    &.dragafter::before { right: -1.5px; }
+
+    &.dragbefore::after,
+    &.dragafter::after {
+      content: '';
+      position: absolute;
+      top: 0; width: 0; height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid transparent;
+      pointer-events: none;
+      z-index: 1;
+      @include colors(border-top-color, v(tab-accent-light), v(tab-accent-dark));
     }
+    &.dragbefore::after { left: -4px; }
+    &.dragafter::after { right: -4px; }
 
     &:not(.selected) .tabbutton {
       filter: contrast(10%) !important;
