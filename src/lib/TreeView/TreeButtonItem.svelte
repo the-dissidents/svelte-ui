@@ -24,7 +24,7 @@
     align-items: center;
 
     margin: 0;
-    padding: 4px 6px;
+    padding: 0;
     line-height: normal;
 
     border: none;

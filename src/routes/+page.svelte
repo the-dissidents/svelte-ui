@@ -351,16 +351,14 @@
       <div class="flexgrow" style="overflow-y: scroll;">
         <h5>TreeView</h5>
         <TreeView getItems={(item) => {
-          const nItems = item
-            ? Math.random() * 10 / Math.pow(item.data.depth, 0.5)
-            : Math.random() * 10 + 2;
           const result = $state<TreeItem[]>([]);
-          for (let i = 0; i < nItems; i++) {
-            result.push(Math.random() > 0.5
-              ? { leaf: true,
-                  data: { text: `item ${i}`, state: false } } as const
-              : { leaf: false, open: false,
-                  data: { text: `node ${i}`, depth: (item?.data.depth ?? 0) + 1 } } as const);
+          for (let i = 0; i < 5; i++) {
+            const id = item ? `${item.key}/${i}` : `~/${i}`;
+            result.push(i < 3
+              ? { key: id, leaf: true,
+                  data: { text: `item ${id}`, state: false } } as const
+              : { key: id, leaf: false,
+                  data: { text: `node ${id}`, depth: (item?.data.depth ?? 0) + 1 } } as const);
           }
           return result;
         }}>

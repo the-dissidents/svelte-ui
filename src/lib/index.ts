@@ -11,6 +11,9 @@ export { default as Tooltip, type TooltipPosition } from "./Tooltip.svelte";
 export { default as ListView } from "./ListView.svelte";
 export { default as ScrollShadows, scrollShadows } from "./ScrollShadows.svelte";
 
+export { default as TreeView, type TreeViewItem, type TreeViewLeafItem, type TreeViewNodeItem } from "./TreeView/TreeView.svelte";
+export { default as TreeButtonItem } from "./TreeView/TreeButtonItem.svelte";
+
 export { default as TabView } from "./TabView/TabView.svelte";
 export { default as TabPage } from "./TabView/TabPage.svelte";
 
