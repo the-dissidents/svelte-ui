@@ -29,6 +29,8 @@
   import { showInputPopup } from "$lib/InputPopup.svelte";
   import ScrollShadows, { scrollShadows } from "$lib/ScrollShadows.svelte";
   import { SvelteMap } from "svelte/reactivity";
+  import TreeView, { type TreeViewItem, type TreeViewLeafItem, type TreeViewNodeItem } from "$lib/TreeView/TreeView.svelte";
+  import TreeButtonItem from "$lib/TreeView/TreeButtonItem.svelte";
 
   let value = $state(1.23);
   let tooltipPos: TooltipPosition = $state('bottom');
@@ -67,6 +69,8 @@
 
   let customTabs = new SvelteMap<string, { alignment: 'start' | 'end' }>();
   let counter = 0;
+
+  type TreeItem = TreeViewItem<{text: string, state?: boolean}, {text: string, depth: number}>;
 </script>
 
 <style lang="scss" global>
@@ -345,6 +349,36 @@
       </div>
       <Resizer first={leftPane} vertical={true}/>
       <div class="flexgrow" style="overflow-y: scroll;">
+        <h5>TreeView</h5>
+        <TreeView getItems={(item) => {
+          const nItems = item
+            ? Math.random() * 10 / Math.pow(item.data.depth, 0.5)
+            : Math.random() * 10 + 2;
+          const result = $state<TreeItem[]>([]);
+          for (let i = 0; i < nItems; i++) {
+            result.push(Math.random() > 0.5
+              ? { leaf: true,
+                  data: { text: `item ${i}`, state: false } } as const
+              : { leaf: false, open: false,
+                  data: { text: `node ${i}`, depth: (item?.data.depth ?? 0) + 1 } } as const);
+          }
+          return result;
+        }}>
+          {#snippet leaf(item: TreeViewLeafItem<{text: string, state?: boolean}>)}
+            <!-- {#if item.data.state === undefined} -->
+            <TreeButtonItem>{item.data.text}</TreeButtonItem>
+            <!-- {:else}
+            <label>
+              <input type="checkbox" bind:checked={item.data.state}>
+              {item.data.text}
+            </label>
+            {/if} -->
+          {/snippet}
+          {#snippet node(item: TreeViewNodeItem<{text: string, depth: number}>)}
+            {item.data.text}
+          {/snippet}
+        </TreeView>
+
         <h5>ListView</h5>
         <ListView style="max-height: 300px; overflow-x:hidden;"
           columns={[
@@ -368,6 +402,7 @@
             <button>hi</button>
           {/snippet}
         </ListView>
+
         <h5>You can reorder this list</h5>
         <OrderableList list={list}>
           {#snippet row(item)}
