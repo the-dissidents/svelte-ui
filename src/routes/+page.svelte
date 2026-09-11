@@ -274,7 +274,9 @@
             {/snippet}
 
             <h5>Colorpicker</h5>
-            <Colorpicker color={Color.getColor('pink')}/>
+            <Colorpicker color={Color.getColor('pink')}
+              onchange={(c) => console.log('change', $state.snapshot(c))}
+              oninput={(c) => console.log('input', $state.snapshot(c))} />
 
             <h5>Overlay menu</h5>
 
