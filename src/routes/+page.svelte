@@ -29,7 +29,7 @@
   import { showInputPopup } from "$lib/InputPopup.svelte";
   import ScrollShadows, { scrollShadows } from "$lib/ScrollShadows.svelte";
   import { SvelteMap } from "svelte/reactivity";
-  import TreeView, { type TreeViewItem, type TreeViewLeafItem, type TreeViewNodeItem } from "$lib/TreeView/TreeView.svelte";
+  import TreeView, { type TreeViewItem } from "$lib/TreeView/TreeView.svelte";
   import TreeButtonItem from "$lib/TreeView/TreeButtonItem.svelte";
 
   let value = $state(1.23);
@@ -70,7 +70,7 @@
   let customTabs = new SvelteMap<string, { alignment: 'start' | 'end' }>();
   let counter = 0;
 
-  type TreeItem = TreeViewItem<{text: string, state?: boolean}, {text: string, depth: number}>;
+  type TreeItem = TreeViewItem<{text: string, n: number}, {text: string}>;
 </script>
 
 <style lang="scss" global>
@@ -350,30 +350,26 @@
       <Resizer first={leftPane} vertical={true}/>
       <div class="flexgrow" style="overflow-y: scroll;">
         <h5>TreeView</h5>
-        <TreeView getItems={(item) => {
+        <TreeView getItems={async (item): Promise<TreeItem[]> => {
           const result = $state<TreeItem[]>([]);
           for (let i = 0; i < 5; i++) {
             const id = item ? `${item.key}/${i}` : `~/${i}`;
             result.push(i < 3
               ? { key: id, leaf: true,
-                  data: { text: `item ${id}`, state: false } } as const
+                  data: { text: `item ${id}`, n: 0 } }
               : { key: id, leaf: false,
-                  data: { text: `node ${id}`, depth: (item?.data.depth ?? 0) + 1 } } as const);
+                  data: { text: `node ${id}` } });
           }
+          await new Promise((r) => setTimeout(r, 500));
           return result;
         }}>
-          {#snippet leaf(item: TreeViewLeafItem<{text: string, state?: boolean}>)}
-            <!-- {#if item.data.state === undefined} -->
-            <TreeButtonItem>{item.data.text}</TreeButtonItem>
-            <!-- {:else}
-            <label>
-              <input type="checkbox" bind:checked={item.data.state}>
-              {item.data.text}
-            </label>
-            {/if} -->
+          {#snippet leaf({data})}
+            <TreeButtonItem onclick={() => {data.n++}}>
+              {data.text} ({data.n})
+            </TreeButtonItem>
           {/snippet}
-          {#snippet node(item: TreeViewNodeItem<{text: string, depth: number}>)}
-            {item.data.text}
+          {#snippet node({data})}
+            {data.text}
           {/snippet}
         </TreeView>
 

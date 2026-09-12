@@ -16,7 +16,8 @@
   import type { Snippet } from "svelte";
 
   interface Props {
-    getItems: (item?: TreeViewNodeItem<TNode>) => TreeViewItem<TLeaf, TNode>[],
+    getItems: (item?: TreeViewNodeItem<TNode>) =>
+      TreeViewItem<TLeaf, TNode>[] | Promise<TreeViewItem<TLeaf, TNode>[]>,
     leaf: Snippet<[item: TreeViewLeafItem<TLeaf>]>,
     node: Snippet<[item: TreeViewNodeItem<TNode>]>,
     selected?: string | null,
@@ -114,18 +115,22 @@
 
   {#if !item.leaf && isOpen(item)}
     <ol role='group'>
-      {#each getItems(item) as subitem}
+    {#await getItems(item) then items}
+      {#each items as subitem}
         {@render subtree(subitem, depth + 1)}
       {/each}
+    {/await}
     </ol>
   {/if}
 </li>
 {/snippet}
 
 <ol role='tree' class="svelte-ui-listbox" bind:this={rootEl}>
-  {#each getItems() as item}
-    {@render subtree(item, 1)}
-  {/each}
+  {#await getItems() then items}
+    {#each items as item}
+      {@render subtree(item, 1)}
+    {/each}
+  {/await}
 </ol>
 
 <style lang='scss'>
