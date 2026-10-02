@@ -13,9 +13,10 @@
 <script lang="ts" generics="TLeaf, TNode">
   import { ChevronDownIcon, ChevronRightIcon } from "@lucide/svelte";
 
-  import type { Snippet } from "svelte";
+  import { untrack, type Snippet } from "svelte";
+  import type { HTMLOlAttributes } from "svelte/elements";
 
-  interface Props {
+  interface Props extends HTMLOlAttributes {
     getItems: (item?: TreeViewNodeItem<TNode>) =>
       TreeViewItem<TLeaf, TNode>[] | Promise<TreeViewItem<TLeaf, TNode>[]>,
     leaf: Snippet<[item: TreeViewLeafItem<TLeaf>]>,
@@ -28,17 +29,30 @@
     getItems, leaf, node,
     selected = $bindable(null as string | null),
     onselectchange,
+    ...rest
   }: Props = $props();
 
   let open = $state<Record<string, boolean>>({});
   let rootEl = $state<HTMLElement>();
+  let updateCounter = $state(0);
+
+  /**
+   * Temporary method to reload the whole tree, until we design a way to update granularly.
+   */
+  export function reload() {
+    updateCounter++;
+  }
+
+  export function getSelected() {
+    return selected;
+  }
 
   function isOpen(item: TreeViewNodeItem<TNode>) {
     return open[item.key] ?? item.defaultOpen ?? false;
   }
 
   function setSelected(id: string) {
-    selected = id;
+    untrack(() => selected = id);
     onselectchange?.(id);
   }
 
@@ -72,7 +86,8 @@
         const next = adjacentTreeItem(e.currentTarget as HTMLElement, e.key === "ArrowDown" ? 1 : -1);
         if (next) {
           next.focus();
-          if (next.dataset.id) setSelected(next.dataset.id);
+          const id = next.parentElement?.dataset.id;
+          if (id) setSelected(id);
         }
         break;
       }
@@ -84,6 +99,18 @@
     const items = Array.from(rootEl.querySelectorAll<HTMLElement>('[role="treeitem"] > .row'));
     return items[items.indexOf(from) + direction];
   }
+
+  $effect(() => {
+    if (selected && rootEl) {
+      for (const e of rootEl.querySelectorAll<HTMLElement>('[role="treeitem"] > .row')) {
+        const id = e.parentElement?.dataset.id;
+        if (id === selected) {
+          e.scrollIntoView({ block: 'nearest' });
+          return;
+        }
+      }
+    }
+  })
 </script>
 
 {#snippet subtree(item: TreeViewItem<TLeaf, TNode>, depth: number)}
@@ -125,12 +152,14 @@
 </li>
 {/snippet}
 
-<ol role='tree' class="svelte-ui-listbox" bind:this={rootEl}>
+<ol role='tree' class="svelte-ui-listbox" bind:this={rootEl} {...rest}>
+  {#key updateCounter}
   {#await getItems() then items}
     {#each items as item}
       {@render subtree(item, 1)}
     {/each}
   {/await}
+  {/key}
 </ol>
 
 <style lang='scss'>
@@ -158,7 +187,7 @@
       display: flex;
       flex-direction: column;
       white-space: normal;
-      overflow-y: auto;
+      overflow: auto;
       list-style: none;
       margin: 0 0 0 0.8em;
       padding: 0;
@@ -223,6 +252,8 @@
     flex-grow: 1;
     margin: 0;
     font-size: v(text-font-size);
+    display: flex;
+    flex-direction: row;
 
     :global(.lucide) {
       margin-inline: 0.3em 0.2em;

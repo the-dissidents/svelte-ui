@@ -71,6 +71,7 @@
   let counter = 0;
 
   type TreeItem = TreeViewItem<{text: string, n: number}, {text: string}>;
+  let treeView = $state<TreeView<{text: string, n: number}, {text: string}>>();
 </script>
 
 <style lang="scss" global>
@@ -350,7 +351,9 @@
       <Resizer first={leftPane} vertical={true}/>
       <div class="flexgrow" style="overflow-y: scroll;">
         <h5>TreeView</h5>
-        <TreeView getItems={async (item): Promise<TreeItem[]> => {
+        <button onclick={() => treeView?.reload()}>reload</button>
+        <span>selected: {treeView?.getSelected()}</span>
+        <TreeView bind:this={treeView} getItems={async (item): Promise<TreeItem[]> => {
           const result = $state<TreeItem[]>([]);
           for (let i = 0; i < 5; i++) {
             const id = item ? `${item.key}/${i}` : `~/${i}`;
@@ -362,7 +365,7 @@
           }
           await new Promise((r) => setTimeout(r, 500));
           return result;
-        }}>
+        }} style="max-height: 10em;">
           {#snippet leaf({data})}
             <TreeButtonItem onclick={() => {data.n++}}>
               {data.text} ({data.n})
