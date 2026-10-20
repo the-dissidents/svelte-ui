@@ -29,7 +29,7 @@ let {
   class:active class:checked
   onclick={() => { active = !active; onActiveChanged?.(active) }}
 >
-  <span class="hlayout flexgrow">
+  <span class="hlayout flexgrow head">
     <span class="caret"></span>
     <span class='flexgrow'>
       {#if typeof header === 'string'}
@@ -80,6 +80,10 @@ let {
   button.checked {
     background-color: uchu.$green-9 !important;
   }
+}
+
+.head {
+  align-items: center;
 }
 
 .check {
