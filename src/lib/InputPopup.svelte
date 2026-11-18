@@ -72,14 +72,16 @@
   </div>
 </Popup>
 
-<style>
+<style lang='scss'>
+  @use "./parameters.sass" as *;
+
   label {
     display: flex;
     flex-direction: column;
     gap: 3px;
   }
   input.invalid {
-    background-color: lightpink;
+    @include colorvars(background-color, error-back);
   }
 
   button {

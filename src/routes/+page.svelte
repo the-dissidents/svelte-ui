@@ -324,6 +324,18 @@
               confirmation
             </button>
 
+            <button onclick={(e) => showConfirmationPopup(e.currentTarget, 'yes',
+              { text: 'are you sure to delete?'}
+            )}>
+              confirmation w/ text
+            </button>
+
+            <button onclick={(e) => showConfirmationPopup(e.currentTarget, 'ok',
+              { text: 'Error when submitting', type: 'error' },
+            )}>
+              confirmation w/ error
+            </button>
+
             <button onclick={(e) => showInputPopup(e.currentTarget, 'must include the letter z', {
               validate: (v) => v.includes('z')
             })}>

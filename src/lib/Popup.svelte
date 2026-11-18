@@ -21,7 +21,7 @@ interface Props extends HTMLAttributes<HTMLSpanElement> {
 
 let {
   position = 'top', kind = 'panel', maxWidth = '200px',
-  offset = 5, onclose, children, ...rest
+  offset = 5, onclose, children, class: class_, ...rest
 }: Props = $props();
 
 let id = $props.id();
@@ -154,7 +154,7 @@ export function openState() {
   style="max-width: {maxWidth};"
   role="tooltip"
   id={`${id}-tooltip`}
-  class='popup {kind} {transformClass}'
+  class={[`popup ${kind} ${transformClass}`, class_]}
   ontoggle={(e) => {
     isOpen = e.newState == 'open';
     if (!isOpen) onclose?.();

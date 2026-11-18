@@ -1,6 +1,7 @@
 // Reexport your entry components here
 
 export { default as NumberInput } from "./NumberInput.svelte";
+export { default as DateInput } from "./DateInput.svelte";
 export { default as OrderableList } from "./OrderableList.svelte";
 export { default as Banner } from "./Banner.svelte";
 export { default as Collapsible } from "./Collapsible.svelte";

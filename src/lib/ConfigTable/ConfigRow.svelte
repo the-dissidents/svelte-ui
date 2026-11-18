@@ -4,7 +4,7 @@
 
   interface Props {
     name: string | Snippet,
-    checked?: boolean,
+    checked?: boolean | undefined,
     children: Snippet,
     onCheckedChanged?: (c: boolean) => void
   }
